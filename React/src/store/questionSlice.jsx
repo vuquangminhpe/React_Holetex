@@ -23,11 +23,12 @@ export const fetchComments = createAsyncThunk(
 
 export const addComment = createAsyncThunk(
   "question/addComment",
-  async ({ questionId, content, userId }) => {
+  async ({ questionId, content, userId, parentId = null }) => {
     const response = await axios.post("http://localhost:3001/comments", {
       questionId,
       content,
       userId,
+      parentId,
       createdAt: new Date().toISOString(),
       votes: 0,
     });

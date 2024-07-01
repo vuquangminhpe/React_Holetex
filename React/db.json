@@ -192,6 +192,15 @@
       "userId": 1,
       "createdAt": "2024-07-01T15:49:10.303Z",
       "votes": 4
+    },
+    {
+      "id": "23bf",
+      "questionId": "q1",
+      "content": "test",
+      "userId": 1,
+      "parentId": 1,
+      "createdAt": "2024-07-01T16:11:34.528Z",
+      "votes": 0
     }
   ],
   "enrollments": [

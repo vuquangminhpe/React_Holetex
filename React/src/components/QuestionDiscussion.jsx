@@ -17,7 +17,8 @@ function QuestionDiscussion() {
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("DISCUSS");
   const { questionId } = useParams();
-
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
   useEffect(() => {
     if (questionId) {
       dispatch(fetchQuestion(questionId));
@@ -39,11 +40,30 @@ function QuestionDiscussion() {
       console.error("Failed to vote:", error);
     }
   };
+  // eslint-disable-next-line no-unused-vars
   const handleReply = (commentId) => {
-    // Implement reply functionality
-    console.log(`Replying to comment ${commentId}`);
+    setReplyingTo(commentId);
+    setReplyContent("");
   };
+  const handleSubmitReply = async (e) => {
+    e.preventDefault();
+    if (!replyContent.trim()) return;
 
+    try {
+      await dispatch(
+        addComment({
+          questionId,
+          content: replyContent,
+          userId: 1, // user để test thôi
+          parentId: replyingTo,
+        })
+      );
+      setReplyingTo(null);
+      setReplyContent("");
+    } catch (error) {
+      console.error("Failed to submit reply:", error);
+    }
+  };
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
 
@@ -94,12 +114,15 @@ function QuestionDiscussion() {
 
                 <div className="space-y-4">
                   {comments.map((comment) => (
-                    <div key={comment.id} className="bg-gray-50 p-4 rounded">
+                    <div
+                      key={comment.id}
+                      className="bg-gray-50 p-4 rounded mb-4"
+                    >
                       <p>{comment.content}</p>
                       <div className="mt-2 flex items-center text-sm text-gray-600">
                         <span className="mr-4">Votes: {comment.votes}</span>
                         <div className="flex space-x-2">
-                          {[5, 4, 3, 2, 1].map((star) => (
+                          {[4, 3, 2, 1].map((star) => (
                             <button
                               key={star}
                               onClick={() => handleVote(comment.id, star)}
@@ -109,8 +132,52 @@ function QuestionDiscussion() {
                             </button>
                           ))}
                         </div>
-                        {/* ... */}
+                        <button
+                          onClick={() => handleReply(comment.id)}
+                          className="ml-4 text-blue-500 hover:underline"
+                        >
+                          Reply
+                        </button>
                       </div>
+
+                      {replyingTo === comment.id && (
+                        <form onSubmit={handleSubmitReply} className="mt-4">
+                          <textarea
+                            value={replyContent}
+                            onChange={(e) => setReplyContent(e.target.value)}
+                            className="w-full p-2 border rounded"
+                            placeholder="Write your reply..."
+                            rows="3"
+                          />
+                          <div className="mt-2">
+                            <button
+                              type="submit"
+                              className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+                            >
+                              Submit Reply
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setReplyingTo(null)}
+                              className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+
+                      {/* test các reply khác */}
+                      {comments
+                        .filter((reply) => reply.parentId === comment.id)
+                        .map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="ml-8 mt-2 p-2 bg-gray-100 rounded"
+                          >
+                            <p>{reply.content}</p>
+                          </div>
+                        ))}
                     </div>
                   ))}
                 </div>
