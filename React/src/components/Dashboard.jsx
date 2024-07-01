@@ -114,7 +114,7 @@ function Dashboard() {
                 >
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg font-medium text-gray-900 truncate">
-                      ({course.id} → [{course.semester}])
+                      ({course.id} → [{semester}])
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">{course.name}</p>
                     <p className="mt-1 text-sm text-gray-500">{course.code}</p>
