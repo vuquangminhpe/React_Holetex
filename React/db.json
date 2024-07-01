@@ -1,0 +1,308 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "HE123456",
+      "password": "12345678",
+      "fullName": "Vũ Quang Minh"
+    },
+    {
+      "id": 2,
+      "username": "HE234567",
+      "password": "12345678",
+      "fullName": "Phạm Sơn Hiếu"
+    },
+    {
+      "id": 3,
+      "username": "HE345678",
+      "password": "12345678",
+      "fullName": "Sang Quân "
+    }
+  ],
+  "courses": [
+    {
+      "id": "FER202",
+      "name": "Front-End web development with React",
+      "code": "SE1830-NJ-APHL-SUMMER2024",
+      "instructor": "hoann6@fpt.edu.vn"
+    },
+    {
+      "id": "SWT301",
+      "name": "Software Testing",
+      "code": "SE1830-NJ-APHL-SUMMER2024",
+      "instructor": "hoann6@fpt.edu.vn"
+    },
+    {
+      "id": "SWR302",
+      "name": "Software Requirements",
+      "code": "SE1830-NJ-APHL-SUMMER2024",
+      "instructor": "hoann6@fpt.edu.vn"
+    },
+    {
+      "id": "CSD201",
+      "name": "Data Structures and Algorithms",
+      "code": "SE1830-NJ-APHL-SUMMER2024",
+      "instructor": "tuanvm@fpt.edu.vn"
+    }
+  ],
+  "slots": [
+    {
+      "id": 1,
+      "courseId": "FER202",
+      "number": 1,
+      "dateTime": "10:00 07/05/2024 - 12:20 07/05/2024",
+      "topics": [
+        "Course Introduction",
+        "1.1 Full Stack Web Development: The Big Picture",
+        "1.2 React 18 Introduction",
+        "1.3 Git",
+        "- Setting up Git",
+        "- Basic Git Commands",
+        "- Setting up an Online Git repository",
+        "1.4 Node.js and NPM",
+        "- Setting up Node.js and NPM",
+        "- Basics of Node.js and NPM"
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "content": "What are the key features of React",
+          "status": "Custom",
+          "progress": "On-going"
+        },
+        {
+          "id": "q2",
+          "content": "What is Virtual DOM",
+          "status": "Custom",
+          "progress": "On-going"
+        },
+        {
+          "id": "q3",
+          "content": "What does State transitions mean",
+          "status": "Custom",
+          "progress": "On-going"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "courseId": "FER202",
+      "number": 2,
+      "dateTime": "07:30 10/05/2024 - 09:50 10/05/2024",
+      "topics": [
+        "Rendering with JSX + ES 6",
+        "2.1 ES6",
+        "2.2 ES6 (cont'd)",
+        "2.3 ES6 (cont'd)"
+      ],
+      "questions": []
+    },
+    {
+      "id": 3,
+      "courseId": "SWT301",
+      "number": 1,
+      "dateTime": "13:00 07/05/2024 - 15:20 07/05/2024",
+      "topics": [
+        "Introduction to Software Testing",
+        "1.1 Importance of Testing",
+        "1.2 Types of Software Testing",
+        "1.3 Testing Lifecycle"
+      ],
+      "questions": [
+        {
+          "id": "q4",
+          "content": "What is the difference between unit testing and integration testing?",
+          "status": "Custom",
+          "progress": "On-going"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "courseId": "FER202",
+      "content": "What are the key features of React?",
+      "createdAt": "2024-07-01T10:00:00Z"
+    },
+    {
+      "id": "q2",
+      "courseId": "FER202",
+      "content": "How does Virtual DOM work in React?",
+      "createdAt": "2024-07-01T11:00:00Z"
+    },
+    {
+      "id": "q3",
+      "courseId": "FER202",
+      "content": "What does State transitions mean in React?",
+      "createdAt": "2024-07-01T12:00:00Z"
+    },
+    {
+      "id": "q4",
+      "courseId": "SWT301",
+      "content": "What is the difference between unit testing and integration testing?",
+      "createdAt": "2024-07-02T09:00:00Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "questionId": "q1",
+      "userId": 1,
+      "content": "Key features of React include Virtual DOM, JSX, component-based architecture, and unidirectional data flow.",
+      "createdAt": "2024-07-01T10:30:00Z",
+      "votes": 6
+    },
+    {
+      "id": 2,
+      "questionId": "q1",
+      "userId": 2,
+      "content": "Don't forget about React Hooks, which allow functional components to use state and other React features!",
+      "createdAt": "2024-07-01T11:15:00Z",
+      "votes": 3
+    },
+    {
+      "id": 3,
+      "questionId": "q2",
+      "userId": 1,
+      "content": "Virtual DOM is a lightweight copy of the actual DOM. React uses it to improve performance by minimizing direct manipulations of the real DOM.",
+      "createdAt": "2024-07-01T12:00:00Z",
+      "votes": 4
+    },
+    {
+      "id": 4,
+      "questionId": "q4",
+      "userId": 3,
+      "content": "Unit testing focuses on individual components or functions, while integration testing checks how different parts of the system work together.",
+      "createdAt": "2024-07-02T10:00:00Z",
+      "votes": 2
+    },
+    {
+      "id": "99c2",
+      "questionId": "q3",
+      "content": "test123123",
+      "userId": 1,
+      "createdAt": "2024-07-01T15:06:14.902Z",
+      "votes": 0
+    },
+    {
+      "id": "073a",
+      "questionId": "q4",
+      "content": "test",
+      "userId": 1,
+      "createdAt": "2024-07-01T15:49:10.303Z",
+      "votes": 4
+    }
+  ],
+  "enrollments": [
+    {
+      "id": "8a19",
+      "userId": 1,
+      "courseId": "FER202"
+    },
+    {
+      "id": "a7d3",
+      "userId": 1,
+      "courseId": "SWT301"
+    },
+    {
+      "id": "2f0f",
+      "userId": 2,
+      "courseId": "FER202"
+    },
+    {
+      "id": "b4c8",
+      "userId": 2,
+      "courseId": "SWR302"
+    },
+    {
+      "id": "c5e7",
+      "userId": 3,
+      "courseId": "CSD201"
+    }
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "courseId": "FER202",
+      "name": "Group 1",
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "courseId": "FER202",
+      "name": "Group 2",
+      "members": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 3,
+      "courseId": "FER202",
+      "name": "Group 3",
+      "members": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "id": 4,
+      "courseId": "FER202",
+      "name": "Group 4",
+      "members": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "id": 5,
+      "courseId": "SWT301",
+      "name": "Testing Team A",
+      "members": [
+        1,
+        3,
+        5,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "courseId": "SWT301",
+      "name": "Testing Team B",
+      "members": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    }
+  ]
+}
