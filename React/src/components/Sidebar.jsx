@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 function Sidebar({ isOpen, toggleSidebar }) {
   const user = useSelector((state) => state.user.currentUser);
-
+  // chưa có toggle ,....
   return (
     <div
       className={`bg-gray-200 w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform ${

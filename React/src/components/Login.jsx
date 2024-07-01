@@ -113,7 +113,7 @@ function Login() {
               </div>
             </form>
 
-            {/* Phần còn lại của component giữ nguyên */}
+            {/* đoạn cuối chưa thêm gì khác  */}
           </div>
         </div>
       </div>

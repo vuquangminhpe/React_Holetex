@@ -122,7 +122,7 @@ function QuestionDiscussion() {
                       <div className="mt-2 flex items-center text-sm text-gray-600">
                         <span className="mr-4">Votes: {comment.votes}</span>
                         <div className="flex space-x-2">
-                          {[4, 3, 2, 1].map((star) => (
+                          {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               key={star}
                               onClick={() => handleVote(comment.id, star)}

@@ -48,9 +48,7 @@ function CourseDetails() {
         </nav>
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4">
-          <div className="mb-4 flex items-center space-x-4">
-            {/* Filters and buttons */}
-          </div>
+          <div className="mb-4 flex items-center space-x-4"></div>
 
           <div className="bg-white shadow-md rounded p-4">
             <h2 className="text-xl font-semibold mb-4">SHOW/HIDE (HIỆN/ẨN)</h2>
@@ -96,7 +94,7 @@ function CourseDetails() {
           </div>
 
           <div className="mt-4 flex justify-center space-x-2">
-            {/* Pagination */}
+            {/* Phân trang => chắc là dùng react query */}
           </div>
         </main>
       </div>

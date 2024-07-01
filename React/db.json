@@ -200,7 +200,16 @@
       "userId": 1,
       "parentId": 1,
       "createdAt": "2024-07-01T16:11:34.528Z",
-      "votes": 0
+      "votes": 4
+    },
+    {
+      "id": "2922",
+      "questionId": "q1",
+      "content": "rest",
+      "userId": 1,
+      "parentId": "23bf",
+      "createdAt": "2024-07-01T16:13:01.260Z",
+      "votes": 1
     }
   ],
   "enrollments": [
