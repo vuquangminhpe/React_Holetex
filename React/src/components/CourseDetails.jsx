@@ -16,7 +16,7 @@ const fetchPaginatedSlots = (
   let filteredSlots = slots;
 
   if (activity !== "All Activities") {
-    // Implement activity filter logic here
+    // chưa viết
   }
 
   if (slotFilter !== "All") {
