@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourse, fetchSlots } from "../store/courseSlice";
 import Sidebar from "./Sidebar";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+
 const fetchPaginatedSlots = (
   slots,
   page,
@@ -46,6 +47,7 @@ const fetchPaginatedSlots = (
 
 function CourseDetails() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { course, slots, status, error } = useSelector((state) => state.course);
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilter, setShowFilter] = useState(true);
@@ -65,6 +67,10 @@ function CourseDetails() {
 
   const toggleSlotExpansion = (slotId) => {
     setExpandedSlots((prev) => ({ ...prev, [slotId]: !prev[slotId] }));
+  };
+
+  const handleQuestionClick = (questionId) => {
+    navigate(`/questions/${questionId}`);
   };
 
   const getPaginatedSlots = useCallback(() => {
@@ -174,7 +180,8 @@ function CourseDetails() {
                 {slot.questions.map((question) => (
                   <div
                     key={question.id}
-                    className="flex justify-between text-sm mt-2"
+                    className="flex justify-between text-sm mt-2 cursor-pointer"
+                    onClick={() => handleQuestionClick(question.id)}
                   >
                     <p>{question.content}</p>
                     <span className="text-orange-500 mr-2">

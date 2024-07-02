@@ -17,6 +17,42 @@
       "username": "HE345678",
       "password": "12345678",
       "fullName": "Sang Quân "
+    },
+    {
+      "id": 4,
+      "username": "HE456789",
+      "password": "12345678",
+      "fullName": "Nguyễn Văn A"
+    },
+    {
+      "id": 5,
+      "username": "HE567890",
+      "password": "12345678",
+      "fullName": "Trần Thị B"
+    },
+    {
+      "id": 6,
+      "username": "HE678901",
+      "password": "12345678",
+      "fullName": "Lê Thị C"
+    },
+    {
+      "id": 7,
+      "username": "HE789012",
+      "password": "12345678",
+      "fullName": "Phan Văn D"
+    },
+    {
+      "id": 8,
+      "username": "HE890123",
+      "password": "12345678",
+      "fullName": "Hoàng Thị E"
+    },
+    {
+      "id": 9,
+      "username": "HE901234",
+      "password": "12345678",
+      "fullName": "Bùi Văn F"
     }
   ],
   "courses": [
@@ -120,6 +156,123 @@
           "progress": "On-going"
         }
       ]
+    },
+    {
+      "id": 4,
+      "courseId": "FER202",
+      "number": 3,
+      "dateTime": "10:00 12/05/2024 - 12:20 12/05/2024",
+      "topics": [
+        "React Components",
+        "3.1 Functional Components",
+        "3.2 Class Components",
+        "3.3 Component Lifecycle"
+      ],
+      "questions": []
+    },
+    {
+      "id": 5,
+      "courseId": "FER202",
+      "number": 4,
+      "dateTime": "07:30 15/05/2024 - 09:50 15/05/2024",
+      "topics": [
+        "State Management with Redux",
+        "4.1 Introduction to Redux",
+        "4.2 Redux Store and Actions",
+        "4.3 Redux Reducers"
+      ],
+      "questions": []
+    },
+    {
+      "id": 6,
+      "courseId": "SWT301",
+      "number": 2,
+      "dateTime": "13:00 10/05/2024 - 15:20 10/05/2024",
+      "topics": [
+        "Testing Strategies",
+        "2.1 Test Planning",
+        "2.2 Test Design Techniques",
+        "2.3 Test Execution"
+      ],
+      "questions": []
+    },
+    {
+      "id": 7,
+      "courseId": "SWT301",
+      "number": 3,
+      "dateTime": "13:00 14/05/2024 - 15:20 14/05/2024",
+      "topics": [
+        "Advanced Testing Concepts",
+        "3.1 Automated Testing",
+        "3.2 Test Automation Tools",
+        "3.3 Test Reporting"
+      ],
+      "questions": []
+    },
+    {
+      "id": 8,
+      "courseId": "SWR302",
+      "number": 1,
+      "dateTime": "10:00 08/05/2024 - 12:20 08/05/2024",
+      "topics": [
+        "Introduction to Software Requirements",
+        "1.1 Requirements Elicitation",
+        "1.2 Requirements Analysis",
+        "1.3 Requirements Specification"
+      ],
+      "questions": []
+    },
+    {
+      "id": 9,
+      "courseId": "SWR302",
+      "number": 2,
+      "dateTime": "07:30 11/05/2024 - 09:50 11/05/2024",
+      "topics": [
+        "Requirements Management",
+        "2.1 Managing Requirements Changes",
+        "2.2 Traceability and Validation",
+        "2.3 Requirements Documentation"
+      ],
+      "questions": []
+    },
+    {
+      "id": 10,
+      "courseId": "CSD201",
+      "number": 1,
+      "dateTime": "13:00 09/05/2024 - 15:20 09/05/2024",
+      "topics": [
+        "Introduction to Data Structures",
+        "1.1 Arrays and Linked Lists",
+        "1.2 Stacks and Queues",
+        "1.3 Trees and Graphs"
+      ],
+      "questions": []
+    },
+    {
+      "id": 11,
+      "courseId": "CSD201",
+      "number": 2,
+      "dateTime": "13:00 16/05/2024 - 15:20 16/05/2024",
+      "topics": [
+        "Algorithms and Complexity",
+        "2.1 Sorting Algorithms",
+        "2.2 Searching Algorithms",
+        "2.3 Big-O Notation"
+      ],
+      "questions": []
+    },
+    {
+      "id": 12,
+      "courseId": "CSD201",
+      "number": 3,
+      "dateTime": "13:00 23/05/2024 - 15:20 23/05/2024",
+      "topics": [
+        "Advanced Data Structures",
+        "3.1 Heaps and Hash Tables",
+        "3.2 Graph Algorithms",
+        "3.3 Dynamic Programming"
+      ],
+      "questions": []
     }
   ],
   "questions": [
@@ -146,6 +299,72 @@
       "courseId": "SWT301",
       "content": "What is the difference between unit testing and integration testing?",
       "createdAt": "2024-07-02T09:00:00Z"
+    },
+    {
+      "id": "q5",
+      "courseId": "FER202",
+      "content": "What is JSX and why is it used in React?",
+      "createdAt": "2024-07-02T10:00:00Z"
+    },
+    {
+      "id": "q6",
+      "courseId": "FER202",
+      "content": "What are React Hooks and how do they work?",
+      "createdAt": "2024-07-02T11:00:00Z"
+    },
+    {
+      "id": "q7",
+      "courseId": "SWT301",
+      "content": "What is Test-Driven Development (TDD)?",
+      "createdAt": "2024-07-03T09:00:00Z"
+    },
+    {
+      "id": "q8",
+      "courseId": "SWT301",
+      "content": "What are the different levels of software testing?",
+      "createdAt": "2024-07-03T10:00:00Z"
+    },
+    {
+      "id": "q9",
+      "courseId": "SWR302",
+      "content": "What is requirements elicitation?",
+      "createdAt": "2024-07-03T11:00:00Z"
+    },
+    {
+      "id": "q10",
+      "courseId": "SWR302",
+      "content": "How do you perform requirements analysis?",
+      "createdAt": "2024-07-03T12:00:00Z"
+    },
+    {
+      "id": "q11",
+      "courseId": "CSD201",
+      "content": "What are the basic data structures used in programming?",
+      "createdAt": "2024-07-03T13:00:00Z"
+    },
+    {
+      "id": "q12",
+      "courseId": "CSD201",
+      "content": "What is Big-O Notation and why is it important?",
+      "createdAt": "2024-07-03T14:00:00Z"
+    },
+    {
+      "id": "q13",
+      "courseId": "FER202",
+      "content": "What are the advantages of using functional components in React?",
+      "createdAt": "2024-07-03T15:00:00Z"
+    },
+    {
+      "id": "q14",
+      "courseId": "SWT301",
+      "content": "What tools can be used for test automation?",
+      "createdAt": "2024-07-04T09:00:00Z"
+    },
+    {
+      "id": "q15",
+      "courseId": "CSD201",
+      "content": "What is dynamic programming and where is it used?",
+      "createdAt": "2024-07-04T10:00:00Z"
     }
   ],
   "comments": [
@@ -182,38 +401,158 @@
       "votes": 2
     },
     {
-      "id": "99c2",
-      "questionId": "q3",
-      "content": "test123123",
+      "id": 5,
+      "questionId": "q5",
       "userId": 1,
-      "createdAt": "2024-07-01T15:06:14.902Z",
+      "content": "JSX is a syntax extension for JavaScript that looks similar to HTML. It is used in React to describe what the UI should look like.",
+      "createdAt": "2024-07-02T10:30:00Z",
+      "votes": 1
+    },
+    {
+      "id": 6,
+      "questionId": "q6",
+      "userId": 2,
+      "content": "React Hooks allow you to use state and other React features without writing a class. They make it easier to share logic between components.",
+      "createdAt": "2024-07-02T11:00:00Z",
+      "votes": 2
+    },
+    {
+      "id": 7,
+      "questionId": "q7",
+      "userId": 3,
+      "content": "TDD is a software development process where you write tests before writing the code. It helps ensure that the code meets the requirements.",
+      "createdAt": "2024-07-03T09:30:00Z",
       "votes": 0
     },
     {
-      "id": "073a",
-      "questionId": "q4",
-      "content": "test",
+      "id": 8,
+      "questionId": "q8",
       "userId": 1,
-      "createdAt": "2024-07-01T15:49:10.303Z",
-      "votes": 4
+      "content": "The different levels of software testing include unit testing, integration testing, system testing, and acceptance testing.",
+      "createdAt": "2024-07-03T10:30:00Z",
+      "votes": 3
     },
     {
-      "id": "23bf",
-      "questionId": "q1",
-      "content": "test",
-      "userId": 1,
-      "parentId": 1,
-      "createdAt": "2024-07-01T16:11:34.528Z",
-      "votes": 4
+      "id": 9,
+      "questionId": "q9",
+      "userId": 2,
+      "content": "Requirements elicitation is the process of gathering requirements from stakeholders to understand what they need from a system.",
+      "createdAt": "2024-07-03T11:30:00Z",
+      "votes": 2
     },
     {
-      "id": "2922",
-      "questionId": "q1",
-      "content": "rest",
-      "userId": 1,
-      "parentId": "23bf",
-      "createdAt": "2024-07-01T16:13:01.260Z",
+      "id": 10,
+      "questionId": "q10",
+      "userId": 3,
+      "content": "Requirements analysis involves breaking down requirements into more detailed components to understand how to implement them.",
+      "createdAt": "2024-07-03T12:30:00Z",
       "votes": 1
+    },
+    {
+      "id": 11,
+      "questionId": "q11",
+      "userId": 1,
+      "content": "Basic data structures include arrays, linked lists, stacks, queues, trees, and graphs.",
+      "createdAt": "2024-07-03T13:30:00Z",
+      "votes": 5
+    },
+    {
+      "id": 12,
+      "questionId": "q12",
+      "userId": 2,
+      "content": "Big-O Notation describes the performance of an algorithm in terms of time and space complexity.",
+      "createdAt": "2024-07-03T14:30:00Z",
+      "votes": 3
+    },
+    {
+      "id": 13,
+      "questionId": "q13",
+      "userId": 1,
+      "content": "Functional components are simpler, easier to test, and can take advantage of hooks.",
+      "createdAt": "2024-07-03T15:30:00Z",
+      "votes": 2
+    },
+    {
+      "id": 14,
+      "questionId": "q14",
+      "userId": 3,
+      "content": "Common test automation tools include Selenium, JUnit, and TestNG.",
+      "createdAt": "2024-07-04T09:30:00Z",
+      "votes": 1
+    },
+    {
+      "id": 15,
+      "questionId": "q15",
+      "userId": 2,
+      "content": "Dynamic programming is used to solve problems by breaking them into simpler subproblems and solving each subproblem just once.",
+      "createdAt": "2024-07-04T10:30:00Z",
+      "votes": 2
+    },
+    {
+      "id": 16,
+      "questionId": "q1",
+      "userId": 1,
+      "content": "test comment for q1",
+      "createdAt": "2024-07-04T11:00:00Z",
+      "votes": 0
+    },
+    {
+      "id": 17,
+      "questionId": "q2",
+      "userId": 2,
+      "content": "test comment for q2",
+      "createdAt": "2024-07-04T11:30:00Z",
+      "votes": 1
+    },
+    {
+      "id": 18,
+      "questionId": "q3",
+      "userId": 3,
+      "content": "test comment for q3",
+      "createdAt": "2024-07-04T12:00:00Z",
+      "votes": 2
+    },
+    {
+      "id": 19,
+      "questionId": "q4",
+      "userId": 1,
+      "content": "test comment for q4",
+      "createdAt": "2024-07-04T12:30:00Z",
+      "votes": 3
+    },
+    {
+      "id": 20,
+      "questionId": "q5",
+      "userId": 2,
+      "content": "test comment for q5",
+      "createdAt": "2024-07-04T13:00:00Z",
+      "votes": 0
+    },
+    {
+      "id": 21,
+      "questionId": "q6",
+      "userId": 1,
+      "content": "test comment for q6",
+      "createdAt": "2024-07-04T13:30:00Z",
+      "votes": 1
+    },
+    {
+      "id": "ed29",
+      "questionId": "q3",
+      "content": "test",
+      "userId": 1,
+      "parentId": null,
+      "createdAt": "2024-07-02T10:29:11.920Z",
+      "votes": 0
+    },
+    {
+      "id": "bc64",
+      "questionId": "q3",
+      "content": "test",
+      "userId": 1,
+      "parentId": 18,
+      "createdAt": "2024-07-02T10:29:14.745Z",
+      "votes": 0
     }
   ],
   "enrollments": [
@@ -241,6 +580,46 @@
       "id": "c5e7",
       "userId": 3,
       "courseId": "CSD201"
+    },
+    {
+      "id": "f1a8",
+      "userId": 1,
+      "courseId": "SWR302"
+    },
+    {
+      "id": "f2b9",
+      "userId": 2,
+      "courseId": "CSD201"
+    },
+    {
+      "id": "f3c0",
+      "userId": 3,
+      "courseId": "FER202"
+    },
+    {
+      "id": "f4d1",
+      "userId": 2,
+      "courseId": "SWT301"
+    },
+    {
+      "id": "f5e2",
+      "userId": 3,
+      "courseId": "SWR302"
+    },
+    {
+      "id": "f6f3",
+      "userId": 1,
+      "courseId": "CSD201"
+    },
+    {
+      "id": "f7g4",
+      "userId": 2,
+      "courseId": "SWR302"
+    },
+    {
+      "id": "f8h5",
+      "userId": 3,
+      "courseId": "FER202"
     }
   ],
   "groups": [
@@ -248,37 +627,169 @@
       "id": 1,
       "courseId": "FER202",
       "name": "Group 1",
-      "members": [1, 2, 3, 4, 5, 6, 7]
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
     },
     {
       "id": 2,
       "courseId": "FER202",
       "name": "Group 2",
-      "members": [8, 9, 10, 11, 12, 13, 14]
+      "members": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
     },
     {
       "id": 3,
       "courseId": "FER202",
       "name": "Group 3",
-      "members": [15, 16, 17, 18, 19, 20, 21]
+      "members": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
     },
     {
       "id": 4,
-      "courseId": "FER202",
-      "name": "Group 4",
-      "members": [22, 23, 24, 25, 26, 27, 28, 29, 30]
+      "courseId": "SWT301",
+      "name": "Group 1",
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
     },
     {
       "id": 5,
       "courseId": "SWT301",
-      "name": "Group 1",
-      "members": [1, 3, 5, 7, 9]
+      "name": "Group 2",
+      "members": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
     },
     {
       "id": 6,
       "courseId": "SWT301",
+      "name": "Group 3",
+      "members": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "id": 7,
+      "courseId": "SWR302",
+      "name": "Group 1",
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 8,
+      "courseId": "SWR302",
       "name": "Group 2",
-      "members": [2, 4, 6, 8, 10]
+      "members": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "courseId": "SWR302",
+      "name": "Group 3",
+      "members": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "id": 10,
+      "courseId": "CSD201",
+      "name": "Group 1",
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 11,
+      "courseId": "CSD201",
+      "name": "Group 2",
+      "members": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "courseId": "CSD201",
+      "name": "Group 3",
+      "members": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
     }
   ]
 }
