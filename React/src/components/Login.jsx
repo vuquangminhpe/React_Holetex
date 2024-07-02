@@ -21,6 +21,7 @@ function Login() {
       const response = await axios.get(
         `http://localhost:3001/users?username=${username}&password=${password}`
       );
+      console.log(response);
       if (response.data.length > 0) {
         dispatch(setUser(response.data[0]));
         navigate("/");
