@@ -19,6 +19,7 @@ function QuestionDiscussion() {
   const { questionId } = useParams();
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
+
   useEffect(() => {
     if (questionId) {
       dispatch(fetchQuestion(questionId));
@@ -35,16 +36,17 @@ function QuestionDiscussion() {
 
   const handleVote = async (commentId, value) => {
     try {
-      await dispatch(voteComment({ commentId, value }));
+      await dispatch(voteComment({ commentId, value })).unwrap();
     } catch (error) {
       console.error("Failed to vote:", error);
     }
   };
-  // eslint-disable-next-line no-unused-vars
+
   const handleReply = (commentId) => {
     setReplyingTo(commentId);
     setReplyContent("");
   };
+
   const handleSubmitReply = async (e) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
@@ -54,7 +56,7 @@ function QuestionDiscussion() {
         addComment({
           questionId,
           content: replyContent,
-          userId: 1, // user để test thôi
+          userId: 1,
           parentId: replyingTo,
         })
       );
@@ -64,6 +66,7 @@ function QuestionDiscussion() {
       console.error("Failed to submit reply:", error);
     }
   };
+
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
 
@@ -167,7 +170,6 @@ function QuestionDiscussion() {
                         </form>
                       )}
 
-                      {/* test các reply khác */}
                       {comments
                         .filter((reply) => reply.parentId === comment.id)
                         .map((reply) => (

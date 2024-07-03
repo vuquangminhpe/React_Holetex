@@ -19,12 +19,16 @@ function Login() {
     setSuccess("");
     try {
       const response = await axios.get(
-        `http://localhost:3001/users?username=${username}&password=${password}`
+        `http://localhost:3001/users?username=${username}`
       );
-      console.log(response);
       if (response.data.length > 0) {
-        dispatch(setUser(response.data[0]));
-        navigate("/");
+        const user = response.data[0];
+        if (user.password === password) {
+          dispatch(setUser(user));
+          navigate("/");
+        } else {
+          setError("Sai mật khẩu");
+        }
       } else {
         setError("Tài khoản không tồn tại");
       }
@@ -33,7 +37,6 @@ function Login() {
       console.error("Error logging in:", error);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-gray-800 text-white py-2 px-4">

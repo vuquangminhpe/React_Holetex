@@ -4,55 +4,64 @@
       "id": 1,
       "username": "HE123456",
       "password": "12345678",
-      "fullName": "Vũ Quang Minh"
+      "fullName": "Vũ Quang Minh",
+      "rule": "students"
     },
     {
       "id": 2,
       "username": "HE234567",
       "password": "12345678",
-      "fullName": "Phạm Sơn Hiếu"
+      "fullName": "Phạm Sơn Hiếu",
+      "rule": "students"
     },
     {
       "id": 3,
       "username": "HE345678",
       "password": "12345678",
-      "fullName": "Sang Quân "
+      "fullName": "Sang Quân ",
+      "rule": "students"
     },
     {
       "id": 4,
       "username": "HE456789",
       "password": "12345678",
-      "fullName": "Nguyễn Văn A"
+      "fullName": "Nguyễn Văn A",
+      "rule": "students"
     },
     {
       "id": 5,
       "username": "HE567890",
       "password": "12345678",
-      "fullName": "Trần Thị B"
+      "fullName": "Trần Thị B",
+      "rule": "students"
     },
     {
       "id": 6,
       "username": "HE678901",
       "password": "12345678",
-      "fullName": "Lê Thị C"
+      "fullName": "Lê Thị C",
+      "rule": "students"
     },
     {
       "id": 7,
       "username": "HE789012",
       "password": "12345678",
-      "fullName": "Phan Văn D"
+      "fullName": "Phan Văn D",
+      "rule": "students"
     },
     {
       "id": 8,
       "username": "HE890123",
       "password": "12345678",
-      "fullName": "Hoàng Thị E"
+      "fullName": "Hoàng Thị E",
+      "rule": "students"
     },
     {
       "id": 9,
       "username": "HE901234",
       "password": "12345678",
-      "fullName": "Bùi Văn F"
+      "fullName": "Bùi Văn F",
+      "rule": "students"
     }
   ],
   "courses": [
@@ -553,6 +562,24 @@
       "parentId": 18,
       "createdAt": "2024-07-02T10:29:14.745Z",
       "votes": 0
+    },
+    {
+      "id": "899f",
+      "questionId": "q1",
+      "content": "test",
+      "userId": 1,
+      "parentId": 1,
+      "createdAt": "2024-07-02T13:47:04.667Z",
+      "votes": 5
+    },
+    {
+      "id": "7477",
+      "questionId": "q1",
+      "content": "te",
+      "userId": 1,
+      "parentId": 1,
+      "createdAt": "2024-07-02T13:56:24.483Z",
+      "votes": 2
     }
   ],
   "enrollments": [
