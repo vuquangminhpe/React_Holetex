@@ -1,35 +1,41 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import { setAssignments } from "../slices/userSlice";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const fetchAssignments = async (page) => {
   const { data } = await axios.get(
-    `http://localhost:3001/assignments?page=${page}`
+    `http://localhost:3001/assignments?_page=${page}&_limit=9`
   );
-  console.log("Fetched data:", data);
   return data;
 };
 
 const AssignmentList = () => {
-  const [page, setPage] = useState(1);
+  const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const assignments = useSelector((state) => state.user.assignments || []);
+
+  const queryParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(queryParams.get("page") || "1", 10);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedAssignments = await fetchAssignments(page);
-        console.log("Assignments fetched:", fetchedAssignments);
+        const fetchedAssignments = await fetchAssignments(currentPage);
         dispatch(setAssignments(fetchedAssignments));
       } catch (error) {
-        console.error("Error fetching assignments:", error); // Debugging log
+        console.error("Error fetching assignments:", error);
       }
     };
     fetchData();
-  }, [page, dispatch]);
+  }, [currentPage, dispatch]);
+
+  const handlePageChange = (newPage) => {
+    navigate(`/assignments?page=${newPage}`);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -52,7 +58,7 @@ const AssignmentList = () => {
                   <p>Course ID: {assignment.courseId}</p>
                   <p>Due date: {assignment.dueDate}</p>
                   <Link
-                    to={`/assignments/${assignment.id}`} // Link to the details page
+                    to={`/assignments/${assignment.id}`}
                     className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded"
                   >
                     View assignment
@@ -63,25 +69,34 @@ const AssignmentList = () => {
               <div>No assignments available</div>
             )}
           </div>
-          <div className="mt-4 flex justify-between">
-            <button
-              onClick={() => setPage((old) => Math.max(old - 1, 1))}
-              disabled={page === 1}
-              className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
-            >
-              Previous Page
-            </button>
-            <span>Page {page}</span>
-            <button
-              onClick={() => setPage((old) => old + 1)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+          <div className="mt-4 flex justify-center space-x-4">
+            {currentPage > 1 && (
+              <Link
+                to={`/assignments?page=${currentPage - 1}`}
+                className="text-blue-500 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(currentPage - 1);
+                }}
+              >
+                Previous Page
+              </Link>
+            )}
+            <span>Page {currentPage}</span>
+            <Link
+              to={`/assignments?page=${currentPage + 1}`}
+              className="text-blue-500 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                handlePageChange(currentPage + 1);
+              }}
             >
               Next Page
-            </button>
+            </Link>
           </div>
         </main>
         <footer className="bg-white border-t p-4">
-          {/* Removed onlineUsers */}
+          {/* Footer content */}
         </footer>
       </div>
     </div>
