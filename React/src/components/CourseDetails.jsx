@@ -18,7 +18,9 @@ const fetchPaginatedSlots = (
   if (activity !== "All Activities") {
     // chưa viết
   }
-
+  if (slotFilter === "All") {
+    filteredSlots = filteredSlots.map((slot) => slot);
+  }
   if (slotFilter !== "All") {
     filteredSlots = filteredSlots.filter(
       (slot) => slot.number.toString() === slotFilter
@@ -56,7 +58,7 @@ function CourseDetails() {
   const [filterSlot, setFilterSlot] = useState("All");
   const [filterClassName, setFilterClassName] = useState("");
   const { courseId } = useParams();
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
 
   useEffect(() => {
     dispatch(fetchCourse(courseId));

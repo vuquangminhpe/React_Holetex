@@ -29,7 +29,11 @@ function Sidebar({ isOpen, toggleSidebar }) {
         </Link>
         <Link
           to="/assignments"
-          className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-300 hover:text-gray-900"
+          className={`block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-300 hover:text-gray-900 ${
+            location.pathname === "/assignments"
+              ? "bg-gray-300 text-gray-900"
+              : ""
+          }`}
         >
           Assignments
         </Link>
