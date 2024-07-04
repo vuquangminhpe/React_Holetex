@@ -71,7 +71,7 @@ function QuestionDiscussion() {
           userId: currentUser.id,
           parentId: replyingTo,
         })
-      );
+      ).unwrap();
       setReplyingTo(null);
       setReplyContent("");
     } catch (error) {
@@ -81,7 +81,7 @@ function QuestionDiscussion() {
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
-  console.log("Current Slot:", currentSlot);
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -137,14 +137,9 @@ function QuestionDiscussion() {
                       key={comment.id}
                       className="bg-gray-50 p-4 rounded mb-4"
                     >
-                      {" "}
                       <span className="mr-4">
-                        {(() => {
-                          const user = users.find(
-                            (user) => user.id === String(comment.userId)
-                          );
-                          return user ? `${user.fullName}` : "Unknown";
-                        })()}
+                        {users.find((u) => u.id === comment.userId)?.fullName ||
+                          "Unknown"}
                       </span>
                       <p>{comment.content}</p>
                       <div className="mt-2 flex items-center text-sm text-gray-600">
@@ -195,25 +190,17 @@ function QuestionDiscussion() {
                           </div>
                         </form>
                       )}
-                      {comments
-                        .filter((reply) => reply.parentId === comment.id)
-                        .map((reply) => (
+                      {comment.replies &&
+                        comment.replies.map((reply) => (
                           <div
                             key={reply.id}
                             className="ml-8 mt-2 p-2 bg-gray-100 rounded"
                           >
-                            <p>{reply.content}</p>
-                            <span className="text-sm text-gray-600">
-                              By:{" "}
-                              {(() => {
-                                const user = users.find(
-                                  (user) => user.id === String(reply.userId)
-                                );
-                                return user
-                                  ? `${user.username} (${user.fullName})`
-                                  : "Unknown";
-                              })()}
+                            <span className="mr-4">
+                              {users.find((u) => u.id === reply.userId)
+                                ?.fullName || "Unknown"}
                             </span>
+                            <p>{reply.content}</p>
                           </div>
                         ))}
                     </div>

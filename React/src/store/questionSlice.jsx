@@ -10,27 +10,35 @@ export const fetchQuestion = createAsyncThunk(
     return response.data;
   }
 );
+
 export const fetchSlot = createAsyncThunk(
   "question/fetchSlot",
   async (questionId) => {
-    console.log("Fetching slot for questionId:", questionId);
     const response = await axios.get(`http://localhost:3001/slots`);
     const slots = response.data;
-    console.log("All slots:", slots);
     const slot = slots.find((slot) =>
       slot.questions.some((question) => question.id === questionId)
     );
-    console.log("Found slot:", slot);
     return slot;
   }
 );
+
 export const fetchComments = createAsyncThunk(
   "question/fetchComments",
   async (questionId) => {
     const response = await axios.get(
-      `http://localhost:3001/comments?questionId=${questionId}`
+      `http://localhost:3001/comments?questionId=${questionId}&_sort=createdAt&_order=desc`
     );
-    return response.data;
+    const comments = response.data;
+
+    const mainComments = comments.filter((c) => !c.parentId);
+    const replies = comments.filter((c) => c.parentId);
+
+    mainComments.forEach((comment) => {
+      comment.replies = replies.filter((r) => r.parentId === comment.id);
+    });
+
+    return mainComments;
   }
 );
 
@@ -48,6 +56,7 @@ export const addComment = createAsyncThunk(
     return response.data;
   }
 );
+
 export const voteComment = createAsyncThunk(
   "question/voteComment",
   async ({ commentId, value }) => {
@@ -60,10 +69,12 @@ export const voteComment = createAsyncThunk(
     return response.data;
   }
 );
+
 export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
   const response = await axios.get("http://localhost:3001/users");
   return response.data;
 });
+
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -92,21 +103,43 @@ const questionSlice = createSlice({
         state.comments = action.payload;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        const newComment = action.payload;
+        if (newComment.parentId) {
+          const parentComment = state.comments.find(
+            (c) => c.id === newComment.parentId
+          );
+          if (parentComment) {
+            if (!parentComment.replies) parentComment.replies = [];
+            parentComment.replies.push(newComment);
+          }
+        } else {
+          state.comments.unshift(newComment);
+        }
       })
       .addCase(voteComment.fulfilled, (state, action) => {
-        const index = state.comments.findIndex(
-          (comment) => comment.id === action.payload.id
+        const updatedComment = action.payload;
+        const commentIndex = state.comments.findIndex(
+          (c) => c.id === updatedComment.id
         );
-        if (index !== -1) {
-          state.comments[index] = action.payload;
+        if (commentIndex !== -1) {
+          state.comments[commentIndex] = updatedComment;
+        } else {
+          state.comments.forEach((comment) => {
+            if (comment.replies) {
+              const replyIndex = comment.replies.findIndex(
+                (r) => r.id === updatedComment.id
+              );
+              if (replyIndex !== -1) {
+                comment.replies[replyIndex] = updatedComment;
+              }
+            }
+          });
         }
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.users = action.payload;
       })
       .addCase(fetchSlot.fulfilled, (state, action) => {
-        console.log("Reducer: Setting currentSlot to", action.payload);
         state.currentSlot = action.payload;
       });
   },

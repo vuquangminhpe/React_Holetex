@@ -557,6 +557,69 @@
       "parentId": null,
       "createdAt": "2024-07-04T16:49:21.032Z",
       "votes": 0
+    },
+    {
+      "id": "17bb",
+      "questionId": "q4",
+      "content": "oke",
+      "userId": "1",
+      "parentId": "4",
+      "createdAt": "2024-07-04T16:55:23.231Z",
+      "votes": 0
+    },
+    {
+      "id": "de5e",
+      "questionId": "q4",
+      "content": "s",
+      "userId": "1",
+      "parentId": "4",
+      "createdAt": "2024-07-04T16:55:31.177Z",
+      "votes": 0
+    },
+    {
+      "id": "befa",
+      "questionId": "q1",
+      "content": "t",
+      "userId": "1",
+      "parentId": "1",
+      "createdAt": "2024-07-04T17:07:15.955Z",
+      "votes": 0
+    },
+    {
+      "id": "bb18",
+      "questionId": "q1",
+      "content": "te",
+      "userId": "1",
+      "parentId": "11ce",
+      "createdAt": "2024-07-04T17:12:27.476Z",
+      "votes": 0
+    },
+    {
+      "id": "42bd",
+      "questionId": "q3",
+      "content": "test ",
+      "userId": "1",
+      "parentId": "bc64",
+      "createdAt": "2024-07-04T17:12:56.624Z",
+      "votes": 0
+    },
+    {
+      "id": "1080",
+      "questionId": "q1",
+      "content": "test ",
+      "userId": "1",
+      "parentId": "1",
+      "createdAt": "2024-07-04T17:18:38.579Z",
+      "votes": 0
+    },
+    {
+      "id": "c6c7",
+      "questionId": "q1",
+      "content": "test",
+      "userId": "1",
+      "parentId": null,
+      "createdAt": "2024-07-04T17:18:41.242Z",
+      "votes": 0
     }
   ],
   "enrollments": [
