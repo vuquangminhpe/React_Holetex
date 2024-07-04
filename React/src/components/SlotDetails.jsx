@@ -25,11 +25,10 @@ const SlotDetails = () => {
   if (error) return <div>An error occurred: {error.message}</div>;
 
   return (
-    <div className="container flex h-dvh">
-      <div className="h-dvh">
-        <Sidebar />
-      </div>
-      <div className="container mx-auto p-4 h-full">
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
         <div className="mb-4">
           <button
             className="mr-2 px-4 py-2 bg-blue-500 text-white rounded"

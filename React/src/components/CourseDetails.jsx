@@ -106,10 +106,10 @@ function CourseDetails() {
   if (status === "failed" || isError) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar />
 
-      <div className="flex-grow p-4 bg-gray-100">
+      <div className="flex-1 flex flex-col ">
         <h1 className="text-2xl font-bold">{course?.name}</h1>
         <h2 className="text-xl text-gray-600">{course?.code}</h2>
         <nav className="text-sm text-blue-600 mb-4">

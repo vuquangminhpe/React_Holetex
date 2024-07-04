@@ -10,7 +10,20 @@ export const fetchQuestion = createAsyncThunk(
     return response.data;
   }
 );
-
+export const fetchSlot = createAsyncThunk(
+  "question/fetchSlot",
+  async (questionId) => {
+    console.log("Fetching slot for questionId:", questionId);
+    const response = await axios.get(`http://localhost:3001/slots`);
+    const slots = response.data;
+    console.log("All slots:", slots);
+    const slot = slots.find((slot) =>
+      slot.questions.some((question) => question.id === questionId)
+    );
+    console.log("Found slot:", slot);
+    return slot;
+  }
+);
 export const fetchComments = createAsyncThunk(
   "question/fetchComments",
   async (questionId) => {
@@ -47,12 +60,17 @@ export const voteComment = createAsyncThunk(
     return response.data;
   }
 );
-
+export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
+  const response = await axios.get("http://localhost:3001/users");
+  return response.data;
+});
 const questionSlice = createSlice({
   name: "question",
   initialState: {
     question: null,
     comments: [],
+    users: [],
+    currentSlot: null,
     status: "idle",
     error: null,
   },
@@ -83,6 +101,13 @@ const questionSlice = createSlice({
         if (index !== -1) {
           state.comments[index] = action.payload;
         }
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.users = action.payload;
+      })
+      .addCase(fetchSlot.fulfilled, (state, action) => {
+        console.log("Reducer: Setting currentSlot to", action.payload);
+        state.currentSlot = action.payload;
       });
   },
 });

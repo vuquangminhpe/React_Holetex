@@ -19,7 +19,6 @@ const AssignmentDetail = () => {
         );
         dispatch(setCurrentAssignment(data));
 
-        // Fetch related questions
         const questionsResponse = await axios.get(
           `http://localhost:3001/questions?courseId=${data.courseId}`
         );

@@ -96,7 +96,7 @@ const AssignmentList = () => {
           </div>
         </main>
         <footer className="bg-white border-t p-4">
-          {/* Footer content */}
+          {/* List chuưa có ý tưởng gì để cho vào */}
         </footer>
       </div>
     </div>

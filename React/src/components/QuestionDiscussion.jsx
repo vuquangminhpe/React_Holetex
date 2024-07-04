@@ -6,14 +6,17 @@ import {
   fetchComments,
   addComment,
   voteComment,
+  fetchUsers,
+  fetchSlot,
 } from "../store/questionSlice";
 import Sidebar from "./Sidebar";
 
 function QuestionDiscussion() {
   const dispatch = useDispatch();
-  const { question, comments, status, error } = useSelector(
+  const { question, comments, users, status, error, currentSlot } = useSelector(
     (state) => state.question
   );
+  const { currentUser } = useSelector((state) => state.user);
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("DISCUSS");
   const { questionId } = useParams();
@@ -22,15 +25,24 @@ function QuestionDiscussion() {
 
   useEffect(() => {
     if (questionId) {
-      dispatch(fetchQuestion(questionId));
+      dispatch(fetchQuestion(questionId)).then(() => {
+        dispatch(fetchSlot(questionId));
+      });
       dispatch(fetchComments(questionId));
+      dispatch(fetchUsers());
     }
   }, [dispatch, questionId]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
-    await dispatch(addComment({ questionId, content: newComment, userId: 1 }));
+    if (!newComment.trim() || !currentUser) return;
+    await dispatch(
+      addComment({
+        questionId,
+        content: newComment,
+        userId: currentUser.id,
+      })
+    );
     setNewComment("");
   };
 
@@ -49,14 +61,14 @@ function QuestionDiscussion() {
 
   const handleSubmitReply = async (e) => {
     e.preventDefault();
-    if (!replyContent.trim()) return;
+    if (!replyContent.trim() || !currentUser) return;
 
     try {
       await dispatch(
         addComment({
           questionId,
           content: replyContent,
-          userId: 1,
+          userId: currentUser.id,
           parentId: replyingTo,
         })
       );
@@ -69,7 +81,7 @@ function QuestionDiscussion() {
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
-
+  console.log("Current Slot:", currentSlot);
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -99,21 +111,25 @@ function QuestionDiscussion() {
 
             {activeTab === "DISCUSS" && (
               <div className="p-4">
-                <form onSubmit={handleCommentSubmit} className="mb-4">
-                  <textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="w-full p-2 border rounded"
-                    placeholder="Add your comment..."
-                    rows="4"
-                  />
-                  <button
-                    type="submit"
-                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                  >
-                    Submit
-                  </button>
-                </form>
+                {currentUser ? (
+                  <form onSubmit={handleCommentSubmit} className="mb-4">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="w-full p-2 border rounded"
+                      placeholder="Add your comment..."
+                      rows="4"
+                    />
+                    <button
+                      type="submit"
+                      className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+                    >
+                      Submit
+                    </button>
+                  </form>
+                ) : (
+                  <p>Please log in to comment.</p>
+                )}
 
                 <div className="space-y-4">
                   {comments.map((comment) => (
@@ -121,6 +137,15 @@ function QuestionDiscussion() {
                       key={comment.id}
                       className="bg-gray-50 p-4 rounded mb-4"
                     >
+                      {" "}
+                      <span className="mr-4">
+                        {(() => {
+                          const user = users.find(
+                            (user) => user.id === String(comment.userId)
+                          );
+                          return user ? `${user.fullName}` : "Unknown";
+                        })()}
+                      </span>
                       <p>{comment.content}</p>
                       <div className="mt-2 flex items-center text-sm text-gray-600">
                         <span className="mr-4">Votes: {comment.votes}</span>
@@ -135,15 +160,16 @@ function QuestionDiscussion() {
                             </button>
                           ))}
                         </div>
-                        <button
-                          onClick={() => handleReply(comment.id)}
-                          className="ml-4 text-blue-500 hover:underline"
-                        >
-                          Reply
-                        </button>
+                        {currentUser && (
+                          <button
+                            onClick={() => handleReply(comment.id)}
+                            className="ml-4 text-blue-500 hover:underline"
+                          >
+                            Reply
+                          </button>
+                        )}
                       </div>
-
-                      {replyingTo === comment.id && (
+                      {replyingTo === comment.id && currentUser && (
                         <form onSubmit={handleSubmitReply} className="mt-4">
                           <textarea
                             value={replyContent}
@@ -169,7 +195,6 @@ function QuestionDiscussion() {
                           </div>
                         </form>
                       )}
-
                       {comments
                         .filter((reply) => reply.parentId === comment.id)
                         .map((reply) => (
@@ -178,6 +203,17 @@ function QuestionDiscussion() {
                             className="ml-8 mt-2 p-2 bg-gray-100 rounded"
                           >
                             <p>{reply.content}</p>
+                            <span className="text-sm text-gray-600">
+                              By:{" "}
+                              {(() => {
+                                const user = users.find(
+                                  (user) => user.id === String(reply.userId)
+                                );
+                                return user
+                                  ? `${user.username} (${user.fullName})`
+                                  : "Unknown";
+                              })()}
+                            </span>
                           </div>
                         ))}
                     </div>
@@ -196,7 +232,7 @@ function QuestionDiscussion() {
       <div className="w-64 bg-white p-4 border-l">
         <h3 className="font-semibold mb-2">Table of contents</h3>
         <div className="space-y-2">
-          {question?.relatedQuestions?.map((relatedQuestion) => (
+          {currentSlot?.questions.map((relatedQuestion) => (
             <div key={relatedQuestion.id} className="flex items-center">
               <span className="mr-2 text-orange-500">◻</span>
               <Link
