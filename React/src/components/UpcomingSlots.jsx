@@ -26,9 +26,11 @@ function UpcomingSlots() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="h-full">
-      <Sidebar />
-      <div className="container mx-auto px-4">
+    <div className="h-dvh flex">
+      <div className="h-full">
+        <Sidebar />
+      </div>
+      <div className="container mx-auto px-4 h-max">
         <h1 className="text-2xl font-bold mb-4">Upcoming Slots</h1>
         {currentSlots.map((slot) => (
           <div key={slot.id} className="mb-4 p-4 border rounded">
