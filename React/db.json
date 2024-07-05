@@ -619,6 +619,24 @@
       "userId": "1",
       "parentId": null,
       "createdAt": "2024-07-04T17:18:41.242Z",
+      "votes": 3
+    },
+    {
+      "id": "7564",
+      "questionId": "q1",
+      "content": "test",
+      "userId": "1",
+      "parentId": "2",
+      "createdAt": "2024-07-05T04:18:46.303Z",
+      "votes": 0
+    },
+    {
+      "id": "fd18",
+      "questionId": "q1",
+      "content": "Slot 6s test test ",
+      "userId": "1",
+      "parentId": "2",
+      "createdAt": "2024-07-05T04:19:43.649Z",
       "votes": 0
     }
   ],

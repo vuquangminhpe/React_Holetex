@@ -75,6 +75,20 @@ export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
   return response.data;
 });
 
+export const fetchGroupMembers = createAsyncThunk(
+  "question/fetchGroupMembers",
+  async (groupId) => {
+    const response = await axios.get(`http://localhost:3001/groups/${groupId}`);
+    const group = response.data;
+    const userPromises = group.members.map((userId) =>
+      axios.get(`http://localhost:3001/users/${userId}`)
+    );
+    const userResponses = await Promise.all(userPromises);
+    const users = userResponses.map((response) => response.data);
+    return { ...group, members: users };
+  }
+);
+
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -82,6 +96,7 @@ const questionSlice = createSlice({
     comments: [],
     users: [],
     currentSlot: null,
+    currentGroup: null,
     status: "idle",
     error: null,
   },
@@ -100,10 +115,16 @@ const questionSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        state.comments = action.payload;
+        state.comments = action.payload.map((comment) => ({
+          ...comment,
+          user: state.users.find((user) => user.id === comment.userId),
+        }));
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        const newComment = action.payload;
+        const newComment = {
+          ...action.payload,
+          user: state.users.find((user) => user.id === action.payload.userId),
+        };
         if (newComment.parentId) {
           const parentComment = state.comments.find(
             (c) => c.id === newComment.parentId
@@ -141,6 +162,17 @@ const questionSlice = createSlice({
       })
       .addCase(fetchSlot.fulfilled, (state, action) => {
         state.currentSlot = action.payload;
+      })
+      .addCase(fetchGroupMembers.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchGroupMembers.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.currentGroup = action.payload;
+      })
+      .addCase(fetchGroupMembers.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
