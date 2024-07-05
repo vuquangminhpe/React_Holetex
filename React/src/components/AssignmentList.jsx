@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import Sidebar from "./Sidebar";
 import { setAssignments } from "../slices/userSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 const fetchAssignments = async (page) => {
   const { data } = await axios.get(
@@ -13,6 +13,7 @@ const fetchAssignments = async (page) => {
 };
 
 const AssignmentList = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -37,67 +38,56 @@ const AssignmentList = () => {
     navigate(`/assignments?page=${newPage}`);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b p-4 flex justify-between items-center">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-16"
+        }`}
+      >
+        <header className="bg-white shadow-md p-4 flex items-center">
           <h1 className="text-xl font-semibold">Assignments</h1>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {assignments.length > 0 ? (
-              assignments.map((assignment) => (
-                <div
-                  key={assignment.id}
-                  className="bg-white rounded-lg shadow p-4"
-                >
-                  <h2 className="text-xl font-semibold mb-2">
-                    {assignment.name}
-                  </h2>
-                  <p>Course ID: {assignment.courseId}</p>
-                  <p>Due date: {assignment.dueDate}</p>
-                  <Link
-                    to={`/assignments/${assignment.id}`}
-                    className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded"
-                  >
-                    View assignment
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <div>No assignments available</div>
-            )}
-          </div>
-          <div className="mt-4 flex justify-center space-x-4">
-            {currentPage > 1 && (
-              <Link
-                to={`/assignments?page=${currentPage - 1}`}
-                className="text-blue-500 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageChange(currentPage - 1);
-                }}
+            {assignments.map((assignment) => (
+              <div
+                key={assignment.id}
+                className="bg-white rounded-lg shadow-md p-4"
               >
-                Previous Page
-              </Link>
-            )}
-            <span>Page {currentPage}</span>
-            <Link
-              to={`/assignments?page=${currentPage + 1}`}
-              className="text-blue-500 hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageChange(currentPage + 1);
-              }}
+                <h2 className="text-xl font-semibold mb-2">
+                  {assignment.name}
+                </h2>
+                <p className="text-gray-600">
+                  Course ID: {assignment.courseId}
+                </p>
+                <p className="text-gray-600">Due date: {assignment.dueDate}</p>
+                <Link
+                  to={`/assignments/${assignment.id}`}
+                  className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+                >
+                  Go to course →
+                </Link>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center space-x-4">
+            <span className="px-4 py-2 bg-gray-200 rounded">
+              Page {currentPage}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
             >
               Next Page
-            </Link>
+            </button>
           </div>
         </main>
-        <footer className="bg-white border-t p-4">
-          {/* List chuưa có ý tưởng gì để cho vào */}
-        </footer>
       </div>
     </div>
   );

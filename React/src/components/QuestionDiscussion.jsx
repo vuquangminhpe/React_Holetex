@@ -10,7 +10,6 @@ import {
   fetchSlot,
   fetchGroupMembers,
 } from "../store/questionSlice";
-import Sidebar from "./Sidebar";
 
 function QuestionDiscussion() {
   const dispatch = useDispatch();
@@ -98,10 +97,8 @@ function QuestionDiscussion() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white border-b p-4 flex justify-between items-center">
-          <button className="text-gray-600">☰</button>
           <h1 className="text-xl font-semibold">Question Discussion</h1>
         </header>
 
