@@ -94,7 +94,8 @@ function QuestionDiscussion() {
       dispatch(fetchGroupMembers("1"));
     }
   };
-
+  console.log(users);
+  console.log(comments);
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
   const toggleSidebar = () => {
@@ -180,8 +181,8 @@ function QuestionDiscussion() {
                       className="bg-gray-50 p-4 rounded mb-4"
                     >
                       <span className="mr-4">
-                        {users.find((u) => u.id === comment.userId)?.fullName ||
-                          "Unknown"}
+                        {users.find((u) => Number(u.id) === comment.userId)
+                          ?.fullName || "Unknown"}
                       </span>
                       <p>{comment.content}</p>
                       <div className="mt-2 flex items-center text-sm text-gray-600">
@@ -239,7 +240,9 @@ function QuestionDiscussion() {
                             className="ml-8 mt-2 p-2 bg-gray-100 rounded"
                           >
                             <span className="mr-4">
-                              {reply.user ? reply.user.fullName : "Unknown"}
+                              {users.find(
+                                (u) => Number(u.id) === Number(reply.userId)
+                              )?.fullName || "Unknown"}
                             </span>
                             <p>{reply.content}</p>
                           </div>
