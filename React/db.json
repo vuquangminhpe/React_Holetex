@@ -383,7 +383,7 @@
       "userId": 1,
       "content": "Key features of React include Virtual DOM, JSX, component-based architecture, and unidirectional data flow.",
       "createdAt": "2024-07-01T10:30:00Z",
-      "votes": 5
+      "votes": 34
     },
     {
       "id": "2",
@@ -391,7 +391,7 @@
       "userId": 2,
       "content": "Don't forget about React Hooks, which allow functional components to use state and other React features!",
       "createdAt": "2024-07-01T11:15:00Z",
-      "votes": 6
+      "votes": 22
     },
     {
       "id": "3",
@@ -547,7 +547,7 @@
       "userId": 1,
       "parentId": null,
       "createdAt": "2024-07-04T05:15:50.206Z",
-      "votes": 0
+      "votes": 24
     },
     {
       "id": "11ce",
@@ -556,7 +556,7 @@
       "userId": "1",
       "parentId": null,
       "createdAt": "2024-07-04T16:49:21.032Z",
-      "votes": 0
+      "votes": 3
     },
     {
       "id": "17bb",
@@ -619,7 +619,7 @@
       "userId": "1",
       "parentId": null,
       "createdAt": "2024-07-04T17:18:41.242Z",
-      "votes": 3
+      "votes": 23
     },
     {
       "id": "7564",
@@ -664,6 +664,33 @@
       "userId": "1",
       "parentId": "1",
       "createdAt": "2024-07-05T17:41:03.929Z",
+      "votes": 0
+    },
+    {
+      "id": "ce4a",
+      "questionId": "q1",
+      "content": "t",
+      "userId": "1",
+      "parentId": "1",
+      "createdAt": "2024-07-05T18:05:54.130Z",
+      "votes": 0
+    },
+    {
+      "id": "d443",
+      "questionId": "q1",
+      "content": "ok",
+      "userId": "1",
+      "parentId": "c6c7",
+      "createdAt": "2024-07-05T18:06:04.834Z",
+      "votes": 0
+    },
+    {
+      "id": "cd6a",
+      "questionId": "q1",
+      "content": "h",
+      "userId": "1",
+      "parentId": "2",
+      "createdAt": "2024-07-05T18:26:55.996Z",
       "votes": 0
     }
   ],

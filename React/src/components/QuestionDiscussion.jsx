@@ -57,7 +57,11 @@ function QuestionDiscussion() {
 
   const handleVote = async (commentId, value) => {
     try {
-      await dispatch(voteComment({ commentId, value })).unwrap();
+      const currentComment = comments.find((c) => c.id === commentId);
+      if (currentComment) {
+        const newVotes = currentComment.votes + value;
+        await dispatch(voteComment({ commentId, value: newVotes })).unwrap();
+      }
     } catch (error) {
       console.error("Failed to vote:", error);
     }
@@ -145,7 +149,13 @@ function QuestionDiscussion() {
                       />
                       <span>{member.fullName}</span>
                       <span className="ml-auto">
-                        {member.online ? "Online" : "Offline"}
+                        {
+                          (member.id = currentUser.id ? (
+                            <span className="text-green-400">Online</span>
+                          ) : (
+                            <span className="text-red-600">Offline</span>
+                          ))
+                        }
                       </span>
                     </div>
                   ))}
