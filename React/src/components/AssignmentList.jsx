@@ -47,14 +47,14 @@ const AssignmentList = () => {
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "ml-64" : "ml-16"
+          isSidebarOpen ? "" : "ml-16"
         }`}
       >
         <header className="bg-white shadow-md p-4 flex items-center">
           <h1 className="text-xl font-semibold">Assignments</h1>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="">
             {assignments.map((assignment) => (
               <div
                 key={assignment.id}
@@ -76,18 +76,18 @@ const AssignmentList = () => {
               </div>
             ))}
           </div>
-          <div className="mt-8 flex justify-center space-x-4">
-            <span className="px-4 py-2 bg-gray-200 rounded">
-              Page {currentPage}
-            </span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
-            >
-              Next Page
-            </button>
-          </div>
         </main>
+        <div className="mt-8 flex justify-center space-x-4">
+          <span className="px-4 py-2 bg-gray-200 rounded">
+            Page {currentPage}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+          >
+            Next Page
+          </button>
+        </div>
       </div>
     </div>
   );

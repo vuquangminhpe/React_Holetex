@@ -10,8 +10,11 @@ import {
   fetchSlot,
   fetchGroupMembers,
 } from "../store/questionSlice";
+import Sidebar from "./Sidebar";
 
 function QuestionDiscussion() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const dispatch = useDispatch();
   const {
     question,
@@ -94,14 +97,22 @@ function QuestionDiscussion() {
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
-
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b p-4 flex justify-between items-center">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+      <div
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+          isSidebarOpen ? "" : "ml-4"
+        }`}
+      >
+        {" "}
+        <header className="bg-white shadow-md p-4 flex items-center">
           <h1 className="text-xl font-semibold">Question Discussion</h1>
         </header>
-
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
           <h2 className="text-2xl font-semibold mb-4">{question?.content}</h2>
 
@@ -240,7 +251,6 @@ function QuestionDiscussion() {
             )}
           </div>
         </main>
-
         <footer className="bg-white border-t p-4">
           <p className="text-center text-sm text-gray-600">Online: 9927</p>
         </footer>
