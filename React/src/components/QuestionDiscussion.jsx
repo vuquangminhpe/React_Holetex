@@ -128,11 +128,11 @@ function QuestionDiscussion() {
     setIsSidebarOpen(!isSidebarOpen);
   };
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-full bg-gray-100">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div
-        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+        className={`flex-1 h-full flex flex-col  transition-all duration-300 ${
           isSidebarOpen ? "" : "ml-4"
         }`}
       >
@@ -141,7 +141,10 @@ function QuestionDiscussion() {
           <h1 className="text-xl font-semibold">Question Discussion</h1>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-          <h2 className="text-2xl font-semibold mb-4">{question?.content}</h2>
+          <div className="w-full h-24 p-4 rounded-lg mb-4 bg-slate-200">
+            <div className="border-b-[0.01px] border-b-gray-400">Content</div>
+            <h2 className="text-2xl font-semibold mb-4">{question?.content}</h2>
+          </div>
 
           <div className="bg-white rounded-lg shadow">
             <div className="flex border-b">
@@ -280,22 +283,29 @@ function QuestionDiscussion() {
                       )}
                       <div className="mt-2 flex items-center text-sm text-gray-600">
                         <span className="mr-2">Votes</span>
-
                         {hoveredCommentId === comment.id && (
                           <div className="flex items-center">
-                            {[1, 2, 3, 4].map((star) => (
-                              <button
-                                key={star}
-                                onClick={() => handleVote(comment.id, star)}
-                                className={`text-yellow-400 hover:text-yellow-500 ${
-                                  comment.userVote >= star
-                                    ? "text-yellow-500"
-                                    : ""
-                                }`}
-                              >
-                                ★
-                              </button>
-                            ))}
+                            {currentUser &&
+                              Number(currentUser.id) !==
+                                Number(comment.userId) && (
+                                <>
+                                  {[1, 2, 3, 4].map((star) => (
+                                    <button
+                                      key={star}
+                                      onClick={() =>
+                                        handleVote(comment.id, star)
+                                      }
+                                      className={`text-yellow-400 hover:text-yellow-500 ${
+                                        comment.userVote >= star
+                                          ? "text-yellow-500"
+                                          : ""
+                                      }`}
+                                    >
+                                      ★
+                                    </button>
+                                  ))}
+                                </>
+                              )}
                           </div>
                         )}
                         {currentUser && (
@@ -361,6 +371,61 @@ function QuestionDiscussion() {
 
       <div className="w-64 bg-white p-4 border-l">
         <h3 className="font-semibold mb-2">Table of contents</h3>
+        <div className="space-y-2 mb-5">
+          <div className="mr-2 font-semibold">Group meeting</div>
+
+          <button className="w-full text-center rounded h-10 leading-10 bg-blue-500">
+            UPDATE
+          </button>
+        </div>
+        <div className="space-y-2 mb-5">
+          <div className="mr-2 flex font-semibold">Individual grade</div>
+
+          <button className="w-full rounded text-center h-10 leading-10 bg-blue-500">
+            GRADES ON GROUPMATES
+          </button>
+        </div>
+        <div className="space-y-2 mb-5">
+          <div className="font-semibold mr-2">Chart summary</div>
+          <div className=" flex">
+            <img
+              className="font-thin text-xs w-15 h-10 mr-3"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17 4h3v16h-3zM5 14h3v6H5zm6-5h3v11h-3z'%3E%3C/path%3E%3C/svg%3E"
+            />
+
+            <img
+              className="font-thin text-xs w-15 h-10 mr-3`"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4m0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2m8.01-1c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3m0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1M16.5 3C13.47 3 11 5.47 11 8.5s2.47 5.5 5.5 5.5S22 11.53 22 8.5 19.53 3 16.5 3m0 9c-1.93 0-3.5-1.57-3.5-3.5S14.57 5 16.5 5 20 6.57 20 8.5 18.43 12 16.5 12'%3E%3C/path%3E%3C/svg%3E"
+            />
+
+            <img
+              className="font-thin text-xs w-15 h-10"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m16 18 2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6z'%3E%3C/path%3E%3C/svg%3E"
+            />
+          </div>
+        </div>
+        <div className="space-y-2 mb-5">
+          <div className="font-semibold mr-2">Call video</div>
+          <button className="shadow-lg text-blue-400">JOIN STREAM</button>
+        </div>
+        <div className="space-y-2 mb-5">
+          <div className="font-semibold">Pass criteria</div>
+          <div>View question</div>
+          <span className="flex justify-between">
+            <div>No. of comments posted</div>
+            <div>1</div>
+          </span>
+          <span className="flex justify-between">
+            {" "}
+            <div>No. of stars rated by others</div>
+            <div>1</div>
+          </span>
+          <span className="flex justify-between">
+            {" "}
+            <div>No. of votes</div>
+            <div>1</div>
+          </span>
+        </div>
         <div className="space-y-2">
           <div className="mr-2">Question</div>
           {currentSlot?.questions.map((relatedQuestion) => (

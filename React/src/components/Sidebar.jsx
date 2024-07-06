@@ -6,6 +6,7 @@ import {
   FaBook,
   FaHeadset,
   FaQuestionCircle,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
@@ -22,6 +23,11 @@ function Sidebar({ isOpen, toggleSidebar }) {
       path: "/faq",
       icon: FaQuestionCircle,
       text: "Frequently Asked Questions",
+    },
+    {
+      path: "/login",
+      icon: FaSignOutAlt,
+      text: "Log out",
     },
   ];
 
