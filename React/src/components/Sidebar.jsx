@@ -33,13 +33,25 @@ function Sidebar({ isOpen, toggleSidebar }) {
     >
       <div className="flex items-center justify-between px-4 w-full">
         {isOpen && (
-          <div className="flex">
+          <div className="">
             <img
-              src="/path-to-user-avatar.png"
-              alt="User Avatar"
-              className="h-8 w-8 rounded-full"
-            />
-            <span>{user?.fullName}</span>
+              src="https://edunext.fpt.edu.vn/assets/logo-home-Djb_K2V0.png"
+              className="w-36 h-11"
+              alt="FPT University"
+            ></img>
+            <div className="flex">
+              <svg
+                className="mr-3"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6m0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20"></path>
+              </svg>
+
+              <span>{user?.fullName}</span>
+            </div>
           </div>
         )}
         <button onClick={toggleSidebar} className="text-gray-600">

@@ -9,6 +9,8 @@ import {
   fetchUsers,
   fetchSlot,
   fetchGroupMembers,
+  deleteComment,
+  editComment,
 } from "../store/questionSlice";
 import Sidebar from "./Sidebar";
 
@@ -25,6 +27,9 @@ function QuestionDiscussion() {
     currentSlot,
     currentGroup,
   } = useSelector((state) => state.question);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [hoveredCommentId, setHoveredCommentId] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("DISCUSS");
@@ -34,11 +39,11 @@ function QuestionDiscussion() {
 
   useEffect(() => {
     if (questionId) {
-      dispatch(fetchQuestion(questionId)).then(() => {
+      dispatch(fetchUsers()).then(() => {
+        dispatch(fetchQuestion(questionId));
+        dispatch(fetchComments(questionId));
         dispatch(fetchSlot(questionId));
       });
-      dispatch(fetchComments(questionId));
-      dispatch(fetchUsers());
     }
   }, [dispatch, questionId]);
 
@@ -53,15 +58,14 @@ function QuestionDiscussion() {
       })
     );
     setNewComment("");
+    dispatch(fetchComments(questionId));
   };
-
   const handleVote = async (commentId, value) => {
+    if (!currentUser) return;
     try {
-      const currentComment = comments.find((c) => c.id === commentId);
-      if (currentComment) {
-        const newVotes = currentComment.votes + value;
-        await dispatch(voteComment({ commentId, value: newVotes })).unwrap();
-      }
+      await dispatch(
+        voteComment({ commentId, value, userId: currentUser.id })
+      ).unwrap();
     } catch (error) {
       console.error("Failed to vote:", error);
     }
@@ -91,13 +95,31 @@ function QuestionDiscussion() {
       console.error("Failed to submit reply:", error);
     }
   };
+  const handleEditComment = (commentId, newContent) => {
+    dispatch(editComment({ commentId, content: newContent }));
+  };
 
+  const handleDeleteComment = (commentId) => {
+    if (window.confirm("Bạn có chắc muốn xóa bình luận này?")) {
+      dispatch(deleteComment(commentId));
+    }
+  };
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "GROUP") {
       dispatch(fetchGroupMembers("1"));
     }
   };
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
   console.log(users);
   console.log(comments);
   if (status === "loading") return <div>Loading...</div>;
@@ -143,19 +165,17 @@ function QuestionDiscussion() {
                   currentGroup.members.map((member) => (
                     <div key={member.id} className="flex items-center my-2">
                       <img
-                        src={member.avatar}
+                        src="data:image/png;base64,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"
                         alt={member.fullName}
                         className="w-8 h-8 rounded-full mr-2"
                       />
                       <span>{member.fullName}</span>
                       <span className="ml-auto">
-                        {
-                          (member.id = currentUser.id ? (
-                            <span className="text-green-400">Online</span>
-                          ) : (
-                            <span className="text-red-600">Offline</span>
-                          ))
-                        }
+                        {member.id === currentUser.id ? (
+                          <span className="text-green-400">Online</span>
+                        ) : (
+                          <span className="text-red-600">Offline</span>
+                        )}
                       </span>
                     </div>
                   ))}
@@ -189,25 +209,95 @@ function QuestionDiscussion() {
                     <div
                       key={comment.id}
                       className="bg-gray-50 p-4 rounded mb-4"
+                      onMouseEnter={() => setHoveredCommentId(comment.id)}
+                      onMouseLeave={() => setHoveredCommentId(null)}
                     >
                       <span className="mr-4">
-                        {users.find((u) => Number(u.id) === comment.userId)
-                          ?.fullName || "Unknown"}
+                        {comment.user?.fullName ||
+                          users.find(
+                            (u) => Number(u.id) === Number(comment.userId)
+                          )?.fullName ||
+                          "Unknown"}
                       </span>
-                      <p>{comment.content}</p>
-                      <div className="mt-2 flex items-center text-sm text-gray-600">
-                        <span className="mr-4">Votes: {comment.votes}</span>
-                        <div className="flex space-x-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
+                      {currentUser &&
+                        Number(currentUser.id) === Number(comment.userId) && (
+                          <div className="flex float-right">
+                            {editingCommentId === comment.id ? (
+                              <>
+                                <button
+                                  className="bg-green-500 rounded-2xl mr-2 w-14"
+                                  onClick={() => {
+                                    handleEditComment(comment.id, editContent);
+                                    setEditingCommentId(null);
+                                  }}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="bg-gray-500 rounded-2xl mr-2 w-14"
+                                  onClick={() => setEditingCommentId(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                className="bg-slate-200 rounded-2xl mr-2 w-14"
+                                onClick={() => {
+                                  setEditingCommentId(comment.id);
+                                  setEditContent(comment.content);
+                                }}
+                              >
+                                Edit
+                              </button>
+                            )}
                             <button
-                              key={star}
-                              onClick={() => handleVote(comment.id, star)}
-                              className="text-yellow-400 hover:text-yellow-500"
+                              className="bg-slate-200 rounded-2xl mr-2 w-14"
+                              onClick={() => handleDeleteComment(comment.id)}
                             >
-                              ★
+                              Delete
                             </button>
-                          ))}
-                        </div>
+                          </div>
+                        )}
+                      <div className="flex items-center mb-2">
+                        <img
+                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAhBSURBVHgB7Z3bbxRVHMe/u93KvSx3hNpuIw8g14IXFE1aQR/UBBJMTExMF6PyYqS8+GQCxD8AeNDo0y6i0ZiI+CaJSRcSEEJIC2IAuXS5FVFqSwsFehvPb/dsO7Tb7ezMmZ3f7J5P8tsZSgmd+fb3O7/zO7cAfIZhGBFxqRNG12phYXkfNpmZzhGWFHZVWAvdBwKBFviIABgjxKGXv0rYRnklC0M9CaQFPEz3QsROMIWdYFKkKNIi1cEbEsL2IS1eEprHIZGENQprMvjRJCwKzZBQO4R1GPxpFRYz0m1oaUEPLR/er8SMUhDOSHtUzCgeYkaBhStI0mGkE4ltwhrhTpbnJZRR7hHJyS4UANcFE2LViUsM6b5SMZMUtkUIl4CLBOESRjr87Ra3TSh+sYiIsCb5zK7hiofJuF4qQmUjKazejT6ccg8TYjWISzNKVywiIqxZvItGKEapYOIH3CEucRRfYmEHege75TtRhpKQKLNAit1RaLIRF7ZdRY3SsWBSLGqvVkGTCyou1zsVzZFgWqy8cSyabcG0WLZxJJotwbRYjrEtmt0skRIMLZZ96N3Z6mDnLZhMU6PQOCVqJ+XPKySK/4AKuHugUUlUhMZ9Vr/ZsmCy3EQVDN0pVgu1Y7VWy1j5CNaK0i43uUkSadHGTUIstWGyAh2Bxi0iwiy1Z+N6mBzPaoKmENSPN55mRTAdCgtHEuOExpwhUaadEWgKRQTpaRRjMqaH6azQM8i7asbyslweRt6lxSo8maGqrGT1MOldrdB4SU22vtlYHqZ0lFRji6wajPIw7V2smDGyLcvmYdq7+DAqY8zmYb7sd3X33ceXF/bj0K0juNvbDRU0PP02PlncAA8ZlTGGzH9rpJfVROAzuvq6se3k5zjTcQ4qWTvH8yG/zFq5oRGSkSHR018nu8Qu/aRcrLJAGSJTKsGAjeY/DAlmDK8d9hU3e27j29YDUM3CyfMwZ+JMMKBOTslIYfawOviQE+3NGDQMqGbt7FrRwLNZURzN3JgF82U4PHr7FNxgzazlYMRQWEwJJl2uDj7kbOd5uMGiadVgxFBYzHhYHXzIrQe3ceeR49nPowg/UYHKKfPBjFTK6mvBzt29Ajd4ee5zCAVCYMYm+sgIthI+5PidZqimLBDExsoNYEhKI1972NkO9e3XuzWbUDtzKRiSCokh0Zj5cgbv/f4eXLvfBlWUixDYsGgz3l/0DkQpCAyhJcjVFKgj8CHJezcwKTQ5ZU6YXj4Vz89eifXzX8Lqmcu4ipWhPiBU2wldofcLu3zhYQM3L6DvxI8YvPUX8LAHjpg0DZM+/BqB8gnwIamQyKqHaMbo6cSjX79A37HvqXcPFQSrlvtVLGIGCcZzos3gAB7+8Bn6/1Q7hzVUtQI+pprSepaC9R7+RrlYRGjJK/AxYZ6CDfaj74jlFTjWERkghUQfw1MwSjIGu/6FaoKzqxCY7OuplmHX9ppyQiobdIFgJcsKRl6wFGzg2mm4QWjxOvgdfoIN9GPgwjGoJ4CyymXwOySY+gElBxj32jHY+TdUE5xTnTKf08lOsIFbF1N9MNVMeG2rGDsph89hKNiFo1BNqPZNhFa/hSKgkyodSTDaJKX/ykkoQwxGTtiwFeWvfpC6LwJSgt0FI4Izn0IwvACOCJWLBGMpyl/YLPpd01FEJDMexoZJDWPv6NM/aOD+I+vt24PURz/sUiaccuoEVnM7rrITbCRdD/pw4FQbfj7Zht8v/4dC8saKeYh/9CwY0UKCJcCU823d+Hj/aZy57k3U3rBsHpiRDMplmawyRaL9Xi+2xps9E4tmCtRW8Wr/6KyzTOrUAmbsPXQJ59rUrPOyQ8XEckTmOJsvopgEfWQEc6d4Z5MHfQP47vh1eMmKqgpM4ZVwpDTKCHYQjPjjehe6HWR3Klj/zFwwI0EfLEOiV+2WmaULK8CMBH2kBJNraBNgwrGL7fCaJQumgRFD53Ka6zW/gAG9/YM4frkDXrKqKoy5FaxmVg3NlzALFgcDrrX3pFJ6L9m45kkwI5G5GRKMS1g8c6OLFhjCK2pEKv/ei1VgxGMn3Y4sYXseFn87+w+8YtbUJ/BVdDUqJrNK5x+bPjZSsDg8rnq0XC18hkj9rdeXzsWhT9ehtppVdYNOco+bv5BtJ5yd0IsjuBAXgm0xfyGbYDRxz9s0TZNh1BZ8o4ZhZfLhwrRbTZ7Es+2XqDe45Iv1DS7lN2ov8474WCdF5Nqkmdoy8jK9729hyXm0x5hTiWRbtheaQrM31zksOVdgSy8r9SN+Cwn1u2pyfUPOyXrSy7ZAUyjGfdfjzq6UZ4Ho0Og+e8c7d4WwtCmFDo2uM24ozGBp/rIMjfVgOLuqCMi8W0tYnnAuM5ft0Khml9XT+Yi8VgjIyvEuaFRBYu3J5x/YPcc5Dp9uOcuIfUKsKPJEH7ztDbYP3tZH2xce22IRjvaa06LljSOxCMebA2rRLONYLMLxOlJTH00Px4wNvRvHYhFKFv7SDyIzHp3yj4ZS96gKsQjl+6WKENkIfX4mQQJtHznrySmubHArpxhQuxZBaZJEOgQmoRhX9kKgH1QWM0uxyk/PXOuGWITrW0gLb6sTlxiK39uSwrZYGSJxguu7jdADSG+jhKQYq/30TPRstW6LVXCobaM6pFE8xAzTYWxFi+F/4WJGOrEqLYxh4VoN/nQI22mUgkdZQbyIqLAmgx9NwhoNJkKxO2jEGD48tQHenbqUQHqtXFxVhUIVrE+GMYaPeiRbCXcEJEGoMEv7YByke24imWEtWDaM9PFZEaRHB6rlfXiEmek0WVJer8r7hFsdXLf4H+v6TC9ogJXLAAAAAElFTkSuQmCC"
+                          className="w-8 h-8 rounded-full mr-2"
+                        />
+                        <span className="font-semibold">{}</span>
+                        <span className="text-gray-500 text-sm ml-2">
+                          {formatDate(comment.createdAt)}
+                        </span>
+                      </div>
+                      {editingCommentId === comment.id ? (
+                        <textarea
+                          value={editContent}
+                          onChange={(e) => setEditContent(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      ) : (
+                        <p>{comment.content}</p>
+                      )}
+                      <div className="mt-2 flex items-center text-sm text-gray-600">
+                        <span className="mr-2">Votes</span>
+
+                        {hoveredCommentId === comment.id && (
+                          <div className="flex items-center">
+                            {[1, 2, 3, 4].map((star) => (
+                              <button
+                                key={star}
+                                onClick={() => handleVote(comment.id, star)}
+                                className={`text-yellow-400 hover:text-yellow-500 ${
+                                  comment.userVote >= star
+                                    ? "text-yellow-500"
+                                    : ""
+                                }`}
+                              >
+                                ★
+                              </button>
+                            ))}
+                          </div>
+                        )}
                         {currentUser && (
                           <button
                             onClick={() => handleReply(comment.id)}
@@ -216,6 +306,9 @@ function QuestionDiscussion() {
                             Reply
                           </button>
                         )}
+                      </div>
+                      <div className="rounded-md bg-white w-16 -translate-y-8 h-10 leading-10 justify-center float-right flex">
+                        <div className="text-orange-400">★</div> {comment.votes}{" "}
                       </div>
                       {replyingTo === comment.id && currentUser && (
                         <form onSubmit={handleSubmitReply} className="mt-4">
@@ -264,9 +357,6 @@ function QuestionDiscussion() {
             )}
           </div>
         </main>
-        <footer className="bg-white border-t p-4">
-          <p className="text-center text-sm text-gray-600">Online: 9927</p>
-        </footer>
       </div>
 
       <div className="w-64 bg-white p-4 border-l">
@@ -293,6 +383,9 @@ function QuestionDiscussion() {
             </div>
           ))}
         </div>
+        <p className=" absolute bottom-0 right-0 text-green-400 text-sm mr-2">
+          Online: 9927
+        </p>
       </div>
     </div>
   );

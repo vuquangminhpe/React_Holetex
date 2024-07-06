@@ -59,17 +59,32 @@ export const addComment = createAsyncThunk(
 
 export const voteComment = createAsyncThunk(
   "question/voteComment",
-  async ({ commentId, value }) => {
-    const response = await axios.patch(
-      `http://localhost:3001/comments/${commentId}`,
-      {
-        votes: value,
-      }
+  async ({ commentId, value, userId }) => {
+    const response = await axios.get(
+      `http://localhost:3001/comments/${commentId}`
     );
-    return response.data;
+    const comment = response.data;
+
+    let newVotes = comment.votes;
+    if (!comment.voters || !comment.voters[userId]) {
+      newVotes += value;
+    } else {
+      newVotes = newVotes - comment.voters[userId] + value;
+    }
+
+    const updatedComment = {
+      ...comment,
+      votes: newVotes,
+      voters: { ...comment.voters, [userId]: value },
+    };
+
+    const updateResponse = await axios.put(
+      `http://localhost:3001/comments/${commentId}`,
+      updatedComment
+    );
+    return updateResponse.data;
   }
 );
-
 export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
   const response = await axios.get("http://localhost:3001/users");
   return response.data;
@@ -88,7 +103,42 @@ export const fetchGroupMembers = createAsyncThunk(
     return { ...group, members: users };
   }
 );
+export const editComment = createAsyncThunk(
+  "question/editComment",
+  async ({ commentId, content }) => {
+    const response = await axios.patch(
+      `http://localhost:3001/comments/${commentId}`,
+      { content }
+    );
+    return response.data;
+  }
+);
 
+export const deleteComment = createAsyncThunk(
+  "question/deleteComment",
+  async (commentId) => {
+    await axios.delete(`http://localhost:3001/comments/${commentId}`);
+    return commentId;
+  }
+);
+const updateCommentOrReply = (comments, updatedComment) => {
+  return comments.map((comment) => {
+    if (comment.id === updatedComment.id) {
+      return { ...comment, ...updatedComment };
+    }
+    if (comment.replies) {
+      return {
+        ...comment,
+        replies: comment.replies.map((reply) =>
+          reply.id === updatedComment.id
+            ? { ...reply, ...updatedComment }
+            : reply
+        ),
+      };
+    }
+    return comment;
+  });
+};
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -118,44 +168,51 @@ const questionSlice = createSlice({
         state.comments = action.payload.map((comment) => ({
           ...comment,
           user: state.users.find((user) => user.id === comment.userId),
+          replies: comment.replies?.map((reply) => ({
+            ...reply,
+            user: state.users.find((user) => user.id === reply.userId),
+          })),
         }));
       })
       .addCase(addComment.fulfilled, (state, action) => {
+        const user = state.users.find((u) => u.id === action.payload.userId);
         const newComment = {
           ...action.payload,
-          user: state.users.find((user) => user.id === action.payload.userId),
+          user: user ? { ...user } : null,
         };
         if (newComment.parentId) {
-          const parentComment = state.comments.find(
-            (c) => c.id === newComment.parentId
-          );
-          if (parentComment) {
-            if (!parentComment.replies) parentComment.replies = [];
-            parentComment.replies.push(newComment);
-          }
+          state.comments = state.comments.map((comment) => {
+            if (comment.id === newComment.parentId) {
+              return {
+                ...comment,
+                replies: [...(comment.replies || []), newComment],
+              };
+            }
+            return comment;
+          });
         } else {
-          state.comments.unshift(newComment);
+          state.comments = [newComment, ...state.comments];
         }
       })
       .addCase(voteComment.fulfilled, (state, action) => {
-        const updatedComment = action.payload;
-        const commentIndex = state.comments.findIndex(
-          (c) => c.id === updatedComment.id
-        );
-        if (commentIndex !== -1) {
-          state.comments[commentIndex] = updatedComment;
-        } else {
-          state.comments.forEach((comment) => {
-            if (comment.replies) {
-              const replyIndex = comment.replies.findIndex(
-                (r) => r.id === updatedComment.id
-              );
-              if (replyIndex !== -1) {
-                comment.replies[replyIndex] = updatedComment;
-              }
-            }
-          });
-        }
+        state.comments = updateCommentOrReply(state.comments, action.payload);
+      })
+      .addCase(editComment.fulfilled, (state, action) => {
+        state.comments = updateCommentOrReply(state.comments, action.payload);
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.comments = state.comments.filter((c) => c.id !== action.payload);
+        state.comments = state.comments.map((comment) => {
+          if (comment.replies) {
+            return {
+              ...comment,
+              replies: comment.replies.filter(
+                (reply) => reply.id !== action.payload
+              ),
+            };
+          }
+          return comment;
+        });
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.users = action.payload;

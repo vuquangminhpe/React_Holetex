@@ -53,14 +53,6 @@ function Dashboard() {
       >
         {" "}
         <header className="bg-white shadow-md p-4 flex items-center">
-          <div className="flex items-center">
-            <img
-              src="/path-to-fpt-logo.png"
-              alt="FPT Education"
-              className="h-8 ml-4"
-            />
-          </div>
-
           <div className="flex items-center space-x-4">
             <button className="px-3 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
               COURSE
@@ -130,12 +122,10 @@ function Dashboard() {
               </div>
             </main>
           </div>
+          <p className="float-right text-green-400 text-center text-sm text-gray-500">
+            Online: {9927}
+          </p>
         </main>
-        <footer className="bg-white">
-          <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-sm text-gray-500">Online: {9927}</p>
-          </div>
-        </footer>
       </div>
     </div>
 
