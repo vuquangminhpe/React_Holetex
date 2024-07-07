@@ -139,6 +139,18 @@ const updateCommentOrReply = (comments, updatedComment) => {
     return comment;
   });
 };
+
+export const updateGrades = createAsyncThunk(
+  "question/updateGrades",
+  async ({ slotId, grades }) => {
+    const response = await axios.patch(
+      `http://localhost:3001/slots/${slotId}`,
+      { grades }
+    );
+    return response.data;
+  }
+);
+
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -217,6 +229,11 @@ const questionSlice = createSlice({
 
       .addCase(fetchGroupMembers.fulfilled, (state, action) => {
         state.currentGroup = action.payload;
+      })
+      .addCase(updateGrades.fulfilled, (state, action) => {
+        console.log("Reducer updateGrades.fulfilled:", action.payload);
+        const updatedSlot = action.payload;
+        state.currentSlot = updatedSlot;
       });
   },
 });

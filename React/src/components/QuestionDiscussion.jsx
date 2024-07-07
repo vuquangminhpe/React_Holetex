@@ -13,8 +13,10 @@ import {
   editComment,
 } from "../store/questionSlice";
 import Sidebar from "./Sidebar";
+import GradingModal from "./GradingModal";
 
 function QuestionDiscussion() {
+  const [showGradingModal, setShowGradingModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const dispatch = useDispatch();
@@ -381,10 +383,20 @@ function QuestionDiscussion() {
         <div className="space-y-2 mb-5">
           <div className="mr-2 flex font-semibold">Individual grade</div>
 
-          <button className="w-full rounded text-center h-10 leading-10 bg-blue-500">
+          <button
+            className="w-full rounded text-center h-10 leading-10 bg-blue-500 text-white"
+            onClick={() => setShowGradingModal(true)}
+          >
             GRADES ON GROUPMATES
           </button>
         </div>
+        {showGradingModal && (
+          <GradingModal
+            onClose={() => setShowGradingModal(false)}
+            questionId={questionId}
+            currentUserId={currentUser.id}
+          />
+        )}
         <div className="space-y-2 mb-5">
           <div className="font-semibold mr-2">Chart summary</div>
           <div className=" flex">

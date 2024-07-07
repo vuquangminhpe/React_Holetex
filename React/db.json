@@ -134,12 +134,15 @@
       ],
       "grades": [
         {
-          "id": "1",
-          "groupId": "1",
-          "graderId": "1",
-          "questionID": "q2",
+          "userId": "1",
+          "questionId": "q1",
           "hardWorking": 4,
           "goodKnowledge": 5,
+          "teamworking": 4
+        },
+        {
+          "userId": "2",
+          "questionId": "q1",
           "teamworking": 4
         }
       ]
@@ -174,6 +177,22 @@
           "content": "What is the difference between unit testing and integration testing?",
           "status": "Custom",
           "progress": "On-going"
+        }
+      ],
+      "grades": [
+        {
+          "userId": "1",
+          "questionId": "q4",
+          "hardWorking": 5,
+          "goodKnowledge": 5,
+          "teamworking": 5
+        },
+        {
+          "userId": "2",
+          "questionId": "q4",
+          "goodKnowledge": 5,
+          "teamworking": 5,
+          "hardWorking": 5
         }
       ]
     },
