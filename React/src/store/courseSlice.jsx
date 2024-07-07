@@ -32,16 +32,8 @@ const courseSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCourse.pending, (state) => {
-        state.status = "loading";
-      })
       .addCase(fetchCourse.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.course = action.payload;
-      })
-      .addCase(fetchCourse.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
       })
       .addCase(fetchSlots.fulfilled, (state, action) => {
         state.slots = action.payload;

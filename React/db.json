@@ -137,7 +137,7 @@
           "id": "1",
           "groupId": "1",
           "graderId": "1",
-          "gradeeId": "2",
+          "questionID": "q2",
           "hardWorking": 4,
           "goodKnowledge": 5,
           "teamworking": 4
@@ -729,7 +729,7 @@
     {
       "id": "c498",
       "questionId": "q1",
-      "content": "tesst du lieu\n",
+      "content": "tesst du lieu 123\n",
       "userId": "3",
       "parentId": null,
       "createdAt": "2024-07-06T09:01:17.313Z",
@@ -737,6 +737,15 @@
       "voters": {
         "3": 1
       }
+    },
+    {
+      "id": "9ca7",
+      "questionId": "q1",
+      "content": "tesst",
+      "userId": "3",
+      "parentId": "ad83",
+      "createdAt": "2024-07-07T05:09:09.798Z",
+      "votes": 0
     }
   ],
   "enrollments": [
@@ -811,7 +820,15 @@
       "id": "1",
       "courseId": "FER202",
       "name": "Group 1",
-      "members": [1, 2, 3, 4, 5, 6, 7]
+      "members": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
     }
   ],
   "assignments": [

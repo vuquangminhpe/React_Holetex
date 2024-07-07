@@ -153,17 +153,11 @@ const questionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchQuestion.pending, (state) => {
-        state.status = "loading";
-      })
+
       .addCase(fetchQuestion.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.question = action.payload;
       })
-      .addCase(fetchQuestion.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
+
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.comments = action.payload.map((comment) => ({
           ...comment,
@@ -220,16 +214,9 @@ const questionSlice = createSlice({
       .addCase(fetchSlot.fulfilled, (state, action) => {
         state.currentSlot = action.payload;
       })
-      .addCase(fetchGroupMembers.pending, (state) => {
-        state.status = "loading";
-      })
+
       .addCase(fetchGroupMembers.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.currentGroup = action.payload;
-      })
-      .addCase(fetchGroupMembers.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
       });
   },
 });
