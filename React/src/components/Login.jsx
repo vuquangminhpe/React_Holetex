@@ -14,9 +14,32 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLoginSuccess = (credentialResponse) => {
-    const decodedToken = jwtDecode(credentialResponse.credential);
-    console.log(decodedToken);
+  const handleLoginSuccess = async (credentialResponse) => {
+    setError("");
+    setSuccess("");
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/users?username=${username}`
+      );
+      const decodedToken = jwtDecode(credentialResponse.credential);
+      const dataMail = decodedToken.email.split("@");
+      const pattern = /^[a-zA-Z]{6,8}he\d{6}$/;
+      console.log(dataMail[1], pattern.test(dataMail[0]), dataMail[0]);
+      if (dataMail[1] === "fpt.edu.vn" && pattern.test(dataMail[0])) {
+        const user = response.data[0];
+        console.log(user, dataMail);
+        if (user.email === decodedToken.email) {
+          dispatch(setUser(user));
+          navigate("/");
+        } else {
+          setError("Từ K19 trở đi hãy đang nhập bằng mã ");
+        }
+      } else {
+        setError("Hãy đăng nhập bằng Email fpt.edu.vn !!!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -27,6 +50,7 @@ function Login() {
       const response = await axios.get(
         `http://localhost:3001/users?username=${username}`
       );
+      console.log(response);
       if (response.data.length > 0) {
         const user = response.data[0];
         if (user.password === password) {
@@ -123,8 +147,7 @@ function Login() {
                 </button>
               </div>
               <div className="w-full">
-                <p className="text-center">Google Login</p>
-                <GoogleLogin onSuccess={handleLoginSuccess} />
+                <GoogleLogin className="ml-3" onSuccess={handleLoginSuccess} />
               </div>
             </form>
           </div>

@@ -2,35 +2,38 @@
   "users": [
     {
       "id": "1",
-      "username": "HE123456",
+      "username": "HE173456",
       "password": "12345678",
       "fullName": "Vũ Quang Minh",
+      "email": "minhvqhe176726@fpt.edu.vn",
       "rule": "students"
     },
     {
       "id": "2",
-      "username": "HE234567",
+      "username": "HE174567",
       "password": "12345678",
       "fullName": "Phạm Sơn Hiếu",
+      "email": "quantahe170755@fpt.edu.vn",
       "rule": "students"
     },
     {
       "id": "3",
-      "username": "HE345678",
+      "username": "HE175678",
       "password": "12345678",
       "fullName": "Sang Quân ",
+      "email": "sangnvhe172569@fpt.edu.vn",
       "rule": "students"
     },
     {
       "id": "4",
-      "username": "HE456789",
+      "username": "HE186789",
       "password": "12345678",
       "fullName": "Nguyễn Văn A",
       "rule": "students"
     },
     {
       "id": "5",
-      "username": "HE567890",
+      "username": "HE187890",
       "password": "12345678",
       "fullName": "Trần Thị B",
       "rule": "students"
