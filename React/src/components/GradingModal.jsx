@@ -34,16 +34,18 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
   useEffect(() => {
     if (currentSlot && currentSlot.grades) {
       const initialGrades = {};
-      currentSlot.grades.forEach((grade) => {
-        initialGrades[grade.userId] = {
-          hardWorking: grade.hardWorking,
-          goodKnowledge: grade.goodKnowledge,
-          teamworking: grade.teamworking,
-        };
-      });
+      currentSlot.grades
+        .filter((grade) => grade.questionId === questionId)
+        .forEach((grade) => {
+          initialGrades[grade.userId] = {
+            hardWorking: grade.hardWorking,
+            goodKnowledge: grade.goodKnowledge,
+            teamworking: grade.teamworking,
+          };
+        });
       setGrades(initialGrades);
     }
-  }, [currentSlot]);
+  }, [currentSlot, questionId]);
 
   const handleRatingChange = (userId, category, value) => {
     setGrades((prevGrades) => ({
@@ -61,7 +63,13 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
       questionId,
       ...ratings,
     }));
-    dispatch(updateGrades({ slotId: currentSlot.id, grades: updatedGrades }));
+    dispatch(
+      updateGrades({
+        slotId: currentSlot.id,
+        questionId,
+        grades: updatedGrades,
+      })
+    );
     onClose();
   };
 

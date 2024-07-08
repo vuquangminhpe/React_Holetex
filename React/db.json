@@ -2,6 +2,7 @@
   "users": [
     {
       "id": "1",
+      "semester": 4,
       "username": "HE173456",
       "password": "12345678",
       "fullName": "Vũ Quang Minh",
@@ -10,6 +11,7 @@
     },
     {
       "id": "2",
+      "semester": 1,
       "username": "HE174567",
       "password": "12345678",
       "fullName": "Phạm Sơn Hiếu",
@@ -148,7 +150,17 @@
           "questionId": "q1",
           "hardWorking": 4,
           "goodKnowledge": 4,
-          "teamworking": 4
+          "teamworking": 5
+        },
+        {
+          "userId": "2",
+          "questionId": "q2",
+          "hardWorking": 5
+        },
+        {
+          "userId": "3",
+          "questionId": "q2",
+          "goodKnowledge": 5
         }
       ]
     },

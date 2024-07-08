@@ -142,12 +142,20 @@ const updateCommentOrReply = (comments, updatedComment) => {
 
 export const updateGrades = createAsyncThunk(
   "question/updateGrades",
-  async ({ slotId, grades }) => {
-    const response = await axios.patch(
-      `http://localhost:3001/slots/${slotId}`,
-      { grades }
+  async ({ slotId, questionId, grades }) => {
+    const response = await axios.get(`http://localhost:3001/slots/${slotId}`);
+    const slot = response.data;
+
+    const updatedGrades = slot.grades.filter(
+      (g) => g.questionId !== questionId
     );
-    return response.data;
+    updatedGrades.push(...grades);
+
+    const updateResponse = await axios.patch(
+      `http://localhost:3001/slots/${slotId}`,
+      { grades: updatedGrades }
+    );
+    return updateResponse.data;
   }
 );
 
@@ -231,7 +239,6 @@ const questionSlice = createSlice({
         state.currentGroup = action.payload;
       })
       .addCase(updateGrades.fulfilled, (state, action) => {
-        console.log("Reducer updateGrades.fulfilled:", action.payload);
         const updatedSlot = action.payload;
         state.currentSlot = updatedSlot;
       });
