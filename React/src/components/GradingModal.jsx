@@ -7,6 +7,7 @@ const StarRating = ({ rating, onRatingChange, disabled }) => {
     <div>
       {[1, 2, 3, 4, 5].map((star) => (
         <span
+          className="font-semibold p-1 "
           key={star}
           onClick={() => !disabled && onRatingChange(star)}
           style={{
@@ -68,7 +69,9 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="bg-white p-5 rounded-lg w-3/4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Grading For Groupmates</h2>
+          <h2 className="text-xl font-bold w-full p-1 border-b-2">
+            Grading For Groupmates
+          </h2>
           <button onClick={onClose} className="text-xl">
             &times;
           </button>
@@ -77,8 +80,8 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
           You are grading for groupmates (Click on stars to grade)
         </p>
         <table className="w-full">
-          <thead>
-            <tr>
+          <thead className="p-4">
+            <tr className="text-left  border-b-2 bg-gray-100">
               <th className="">Name</th>
               <th className="">Roll Number</th>
               <th className="">Hard-working</th>
@@ -87,10 +90,10 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
               <th className="">Total</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="p-4">
             {currentGroup &&
               currentGroup.members.map((member) => (
-                <tr key={member.id}>
+                <tr className="border-b-2" key={member.id}>
                   <td>{member.fullName}</td>
                   <td>{member.username}</td>
                   <td>

@@ -1,9 +1,10 @@
-// components/Login.js
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setUser } from "../slices/userSlice";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -12,6 +13,11 @@ function Login() {
   const [success, setSuccess] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleLoginSuccess = (credentialResponse) => {
+    const decodedToken = jwtDecode(credentialResponse.credential);
+    console.log(decodedToken);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +43,7 @@ function Login() {
       console.error("Error logging in:", error);
     }
   };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-gray-800 text-white py-2 px-4">
@@ -115,9 +122,11 @@ function Login() {
                   Login
                 </button>
               </div>
+              <div className="w-full">
+                <p className="text-center">Google Login</p>
+                <GoogleLogin onSuccess={handleLoginSuccess} />
+              </div>
             </form>
-
-            {/* đoạn cuối chưa thêm gì khác  */}
           </div>
         </div>
       </div>

@@ -143,6 +143,8 @@
         {
           "userId": "2",
           "questionId": "q1",
+          "hardWorking": 4,
+          "goodKnowledge": 4,
           "teamworking": 4
         }
       ]
@@ -839,15 +841,7 @@
       "id": "1",
       "courseId": "FER202",
       "name": "Group 1",
-      "members": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
+      "members": [1, 2, 3, 4, 5, 6, 7]
     }
   ],
   "assignments": [
