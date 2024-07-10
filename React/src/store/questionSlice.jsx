@@ -159,6 +159,16 @@ export const updateGrades = createAsyncThunk(
   }
 );
 
+export const updateLinkDrive = createAsyncThunk(
+  "question/updateLinkDrive",
+  async ({ slotId, linkDrive }) => {
+    const response = await axios.patch(
+      `http://localhost:3001/slots/${slotId}`,
+      { linkDrive }
+    );
+    return response.data;
+  }
+);
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -241,6 +251,15 @@ const questionSlice = createSlice({
       .addCase(updateGrades.fulfilled, (state, action) => {
         const updatedSlot = action.payload;
         state.currentSlot = updatedSlot;
+      })
+      .addCase(updateLinkDrive.fulfilled, (state, action) => {
+        const updatedSlot = action.payload;
+        const index = state.slots.findIndex(
+          (slot) => slot.id === updatedSlot.id
+        );
+        if (index !== -1) {
+          state.slots[index] = updatedSlot;
+        }
       });
   },
 });
