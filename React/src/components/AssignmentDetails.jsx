@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
 import { setCurrentAssignment } from "../slices/assignmentSlice";
 import Sidebar from "./Sidebar";
+import http from "../utils/http";
 
 const AssignmentDetail = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -15,13 +15,11 @@ const AssignmentDetail = () => {
   useEffect(() => {
     const fetchAssignmentDetails = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:3001/assignments/${id}`
-        );
+        const { data } = await http.get(`/assignments/${id}`);
         dispatch(setCurrentAssignment(data));
 
-        const questionsResponse = await axios.get(
-          `http://localhost:3001/questions?courseId=${data.courseId}`
+        const questionsResponse = await http.get(
+          `/questions?courseId=${data.courseId}`
         );
         setRelatedQuestions(questionsResponse.data);
       } catch (error) {

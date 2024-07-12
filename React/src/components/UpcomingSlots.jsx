@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "./Sidebar";
+import http from "../utils/http";
 
 function UpcomingSlots() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -14,7 +14,7 @@ function UpcomingSlots() {
 
   useEffect(() => {
     const fetchSlots = async () => {
-      const response = await axios.get("http://localhost:3001/slots");
+      const response = await http.get("/slots");
       setSlots(response.data);
     };
     fetchSlots();

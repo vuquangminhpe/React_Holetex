@@ -117,7 +117,7 @@
         "- Setting up Node.js and NPM",
         "- Basics of Node.js and NPM"
       ],
-      "linkDrive": "https://meet.google.com/pos-upny-rae?authuser=0",
+      "linkDrive": "https://meet.google.com/pos-upny-rae?a=0",
       "questions": [
         {
           "id": "q1",
@@ -140,6 +140,16 @@
       ],
       "grades": [
         {
+          "userId": "2",
+          "questionId": "q2",
+          "hardWorking": 5
+        },
+        {
+          "userId": "3",
+          "questionId": "q2",
+          "goodKnowledge": 5
+        },
+        {
           "userId": "1",
           "questionId": "q1",
           "hardWorking": 4,
@@ -149,19 +159,23 @@
         {
           "userId": "2",
           "questionId": "q1",
-          "hardWorking": 4,
-          "goodKnowledge": 4,
+          "hardWorking": 5,
+          "goodKnowledge": 5,
           "teamworking": 5
         },
         {
-          "userId": "2",
-          "questionId": "q2",
-          "hardWorking": 5
+          "userId": "3",
+          "questionId": "q1",
+          "hardWorking": 5,
+          "goodKnowledge": 5,
+          "teamworking": 5
         },
         {
-          "userId": "3",
-          "questionId": "q2",
-          "goodKnowledge": 5
+          "userId": "4",
+          "questionId": "q1",
+          "hardWorking": 5,
+          "goodKnowledge": 5,
+          "teamworking": 5
         }
       ]
     },
@@ -437,17 +451,6 @@
   ],
   "comments": [
     {
-      "id": "1",
-      "questionId": "q1",
-      "userId": 1,
-      "content": "Key features component-based architecture, but any mỏe ",
-      "createdAt": "2024-07-01T10:30:00Z",
-      "votes": 35,
-      "voters": {
-        "1": 1
-      }
-    },
-    {
       "id": "2",
       "questionId": "q1",
       "userId": 2,
@@ -457,14 +460,6 @@
       "voters": {
         "1": 3
       }
-    },
-    {
-      "id": "3",
-      "questionId": "q2",
-      "userId": 1,
-      "content": "Virtual DOM is a lightweight copy of the actual DOM. React uses it to improve performance by minimizing direct manipulations of the real DOM.",
-      "createdAt": "2024-07-01T12:00:00Z",
-      "votes": 4
     },
     {
       "id": "4",
@@ -608,7 +603,7 @@
     {
       "id": "6f41",
       "questionId": "q1",
-      "content": "Tesst slot ",
+      "content": "Tesst slot u",
       "userId": 1,
       "parentId": null,
       "createdAt": "2024-07-04T05:15:50.206Z",
@@ -753,28 +748,6 @@
       "votes": 0
     },
     {
-      "id": "ad83",
-      "questionId": "q1",
-      "content": "React key ....",
-      "userId": "1",
-      "parentId": null,
-      "createdAt": "2024-07-06T04:29:34.268Z",
-      "votes": 8,
-      "voters": {
-        "1": 4,
-        "3": 4
-      }
-    },
-    {
-      "id": "27b0",
-      "questionId": "q1",
-      "content": "test_REact ",
-      "userId": "1",
-      "parentId": null,
-      "createdAt": "2024-07-06T04:46:55.891Z",
-      "votes": 0
-    },
-    {
       "id": "c498",
       "questionId": "q1",
       "content": "tesst du lieu 123\n",
@@ -794,6 +767,15 @@
       "userId": "3",
       "parentId": "ad83",
       "createdAt": "2024-07-07T05:09:09.798Z",
+      "votes": 0
+    },
+    {
+      "id": "3ce8",
+      "questionId": "q1",
+      "content": "t",
+      "userId": "1",
+      "parentId": "c6c7",
+      "createdAt": "2024-07-10T16:17:30.120Z",
       "votes": 0
     }
   ],
@@ -869,13 +851,24 @@
       "id": "1",
       "courseId": "FER202",
       "name": "Group 1",
-      "members": [1, 2, 3, 4]
+      "members": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": "2",
       "courseId": "FER202",
       "name": "Group 2",
-      "members": [5, 6, 7, 8, 9]
+      "members": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
     }
   ],
   "assignments": [

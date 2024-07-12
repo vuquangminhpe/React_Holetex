@@ -26,7 +26,7 @@ const StudentActivityChart = ({ users, comments, questionId }) => {
     return {
       x: totalVotes,
       y: totalComments,
-      r: activityScore * 5, // Adjust the multiplier for appropriate bubble size
+      r: activityScore * 5,
       label: user.fullName,
     };
   });

@@ -1,12 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import http from "../utils/http";
 
 export const fetchCourse = createAsyncThunk(
   "course/fetchCourse",
   async (courseId) => {
-    const response = await axios.get(
-      `http://localhost:3001/courses/${courseId}`
-    );
+    const response = await http.get(`/courses/${courseId}`);
     return response.data;
   }
 );
@@ -14,9 +12,7 @@ export const fetchCourse = createAsyncThunk(
 export const fetchSlots = createAsyncThunk(
   "course/fetchSlots",
   async (courseId) => {
-    const response = await axios.get(
-      `http://localhost:3001/slots?courseId=${courseId}`
-    );
+    const response = await http.get(`/slots?courseId=${courseId}`);
     return response.data;
   }
 );

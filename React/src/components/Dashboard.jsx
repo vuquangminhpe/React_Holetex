@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { setCourses } from "../slices/userSlice";
 import Sidebar from "./Sidebar";
+import http from "../utils/http";
 
 function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -22,15 +22,15 @@ function Dashboard() {
 
     const fetchCourses = async () => {
       try {
-        const enrollmentsResponse = await axios.get(
-          `http://localhost:3001/enrollments?userId=${user.id}`
+        const enrollmentsResponse = await http.get(
+          `/enrollments?userId=${user.id}`
         );
         const courseIds = enrollmentsResponse.data.map(
           (enrollment) => enrollment.courseId
         );
 
-        const coursesResponse = await axios.get(
-          `http://localhost:3001/courses?id=${courseIds.join("&id=")}`
+        const coursesResponse = await http.get(
+          `/courses?id=${courseIds.join("&id=")}`
         );
         dispatch(setCourses(coursesResponse.data));
       } catch (error) {

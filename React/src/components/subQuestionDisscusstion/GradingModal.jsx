@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGroupMembers } from "../../store/questionSlice";
+import { fetchGroupMembers, updateGrades } from "../../store/questionSlice";
 
 const StarRating = ({ rating, onRatingChange, disabled }) => {
   return (
@@ -64,7 +64,7 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
       ...ratings,
     }));
     dispatch(
-      updatedGrades({
+      updateGrades({
         slotId: currentSlot.id,
         questionId,
         grades: updatedGrades,

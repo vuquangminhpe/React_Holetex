@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { setUser } from "../slices/userSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import http from "../utils/http";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -18,16 +18,15 @@ function Login() {
     setError("");
     setSuccess("");
     try {
-      const response = await axios.get(
-        `http://localhost:3001/users?username=${username}`
-      );
+      const response = await http.get(`/users?username=${username}`);
       const decodedToken = jwtDecode(credentialResponse.credential);
       const dataMail = decodedToken.email.split("@");
       const pattern = /^[a-zA-Z]{6,8}he\d{6}$/;
-      console.log(dataMail[1], pattern.test(dataMail[0]), dataMail[0]);
       if (dataMail[1] === "fpt.edu.vn" && pattern.test(dataMail[0])) {
-        const user = response.data[0];
-        console.log(user, dataMail);
+        const findIndex = response.data.findIndex(
+          (elemnt) => elemnt.email === decodedToken.email
+        );
+        const user = response.data[findIndex];
         if (user.email === decodedToken.email) {
           dispatch(setUser(user));
           navigate("/");
@@ -47,10 +46,7 @@ function Login() {
     setError("");
     setSuccess("");
     try {
-      const response = await axios.get(
-        `http://localhost:3001/users?username=${username}`
-      );
-      console.log(response);
+      const response = await http.get(`/users?username=${username}`);
       if (response.data.length > 0) {
         const user = response.data[0];
         if (user.password === password) {

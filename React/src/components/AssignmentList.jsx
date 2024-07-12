@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
 import { setAssignments } from "../slices/userSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import http from "../utils/http";
 
 const fetchAssignments = async (page) => {
-  const { data } = await axios.get(
-    `http://localhost:3001/assignments?_page=${page}&_limit=9`
-  );
+  const { data } = await http.get(`/assignments?_page=${page}&_limit=9`);
   return data;
 };
 

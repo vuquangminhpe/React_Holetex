@@ -17,7 +17,12 @@ function Sidebar({ isOpen, toggleSidebar }) {
     { path: "/", icon: FaHome, text: "Home" },
     { path: "/assignments", icon: FaClipboardList, text: "Assignments" },
     { path: "/upcoming-slots", icon: FaClock, text: "Upcoming slots" },
-    { path: "/user-guide", icon: FaBook, text: "Read user guide" },
+    {
+      href: "C:/Users/84979/Downloads/Huong_dan_KTXH_tren_EduNext_Sp23_Sinh_Vien.pdf",
+      icon: FaBook,
+      text: "Read user guide",
+      download: true,
+    },
     { path: "/support", icon: FaHeadset, text: "Contact Support" },
     {
       path: "/faq",

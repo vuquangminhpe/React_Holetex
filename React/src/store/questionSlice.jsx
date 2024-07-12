@@ -1,12 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import http from "../utils/http";
 
 export const fetchQuestion = createAsyncThunk(
   "question/fetchQuestion",
   async (questionId) => {
-    const response = await axios.get(
-      `http://localhost:3001/questions/${questionId}`
-    );
+    const response = await http.get(`/questions/${questionId}`);
     return response.data;
   }
 );
@@ -14,7 +12,7 @@ export const fetchQuestion = createAsyncThunk(
 export const fetchSlot = createAsyncThunk(
   "question/fetchSlot",
   async (questionId) => {
-    const response = await axios.get(`http://localhost:3001/slots`);
+    const response = await http.get(`/slots`);
     const slots = response.data;
     const slot = slots.find((slot) =>
       slot.questions.some((question) => question.id === questionId)
@@ -26,8 +24,8 @@ export const fetchSlot = createAsyncThunk(
 export const fetchComments = createAsyncThunk(
   "question/fetchComments",
   async (questionId) => {
-    const response = await axios.get(
-      `http://localhost:3001/comments?questionId=${questionId}&_sort=createdAt&_order=desc`
+    const response = await http.get(
+      `/comments?questionId=${questionId}&_sort=createdAt&_order=desc`
     );
     const comments = response.data;
 
@@ -45,7 +43,7 @@ export const fetchComments = createAsyncThunk(
 export const addComment = createAsyncThunk(
   "question/addComment",
   async ({ questionId, content, userId, parentId = null }) => {
-    const response = await axios.post("http://localhost:3001/comments", {
+    const response = await http.post("/comments", {
       questionId,
       content,
       userId,
@@ -60,9 +58,7 @@ export const addComment = createAsyncThunk(
 export const voteComment = createAsyncThunk(
   "question/voteComment",
   async ({ commentId, value, userId }) => {
-    const response = await axios.get(
-      `http://localhost:3001/comments/${commentId}`
-    );
+    const response = await http.get(`/comments/${commentId}`);
     const comment = response.data;
 
     let newVotes = comment.votes;
@@ -78,25 +74,25 @@ export const voteComment = createAsyncThunk(
       voters: { ...comment.voters, [userId]: value },
     };
 
-    const updateResponse = await axios.put(
-      `http://localhost:3001/comments/${commentId}`,
+    const updateResponse = await http.put(
+      `/comments/${commentId}`,
       updatedComment
     );
     return updateResponse.data;
   }
 );
 export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
-  const response = await axios.get("http://localhost:3001/users");
+  const response = await http.get("/users");
   return response.data;
 });
 
 export const fetchGroupMembers = createAsyncThunk(
   "question/fetchGroupMembers",
   async (groupId) => {
-    const response = await axios.get(`http://localhost:3001/groups/${groupId}`);
+    const response = await http.get(`/groups/${groupId}`);
     const group = response.data;
     const userPromises = group.members.map((userId) =>
-      axios.get(`http://localhost:3001/users/${userId}`)
+      http.get(`/users/${userId}`)
     );
     const userResponses = await Promise.all(userPromises);
     const users = userResponses.map((response) => response.data);
@@ -106,10 +102,7 @@ export const fetchGroupMembers = createAsyncThunk(
 export const editComment = createAsyncThunk(
   "question/editComment",
   async ({ commentId, content }) => {
-    const response = await axios.patch(
-      `http://localhost:3001/comments/${commentId}`,
-      { content }
-    );
+    const response = await http.patch(`/comments/${commentId}`, { content });
     return response.data;
   }
 );
@@ -117,7 +110,7 @@ export const editComment = createAsyncThunk(
 export const deleteComment = createAsyncThunk(
   "question/deleteComment",
   async (commentId) => {
-    await axios.delete(`http://localhost:3001/comments/${commentId}`);
+    await http.delete(`/comments/${commentId}`);
     return commentId;
   }
 );
@@ -143,7 +136,7 @@ const updateCommentOrReply = (comments, updatedComment) => {
 export const updateGrades = createAsyncThunk(
   "question/updateGrades",
   async ({ slotId, questionId, grades }) => {
-    const response = await axios.get(`http://localhost:3001/slots/${slotId}`);
+    const response = await http.get(`/slots/${slotId}`);
     const slot = response.data;
 
     const updatedGrades = slot.grades.filter(
@@ -151,10 +144,9 @@ export const updateGrades = createAsyncThunk(
     );
     updatedGrades.push(...grades);
 
-    const updateResponse = await axios.patch(
-      `http://localhost:3001/slots/${slotId}`,
-      { grades: updatedGrades }
-    );
+    const updateResponse = await http.patch(`/slots/${slotId}`, {
+      grades: updatedGrades,
+    });
     return updateResponse.data;
   }
 );
@@ -162,13 +154,26 @@ export const updateGrades = createAsyncThunk(
 export const updateLinkDrive = createAsyncThunk(
   "question/updateLinkDrive",
   async ({ slotId, linkDrive }) => {
-    const response = await axios.patch(
-      `http://localhost:3001/slots/${slotId}`,
-      { linkDrive }
-    );
+    const response = await http.patch(`/slots/${slotId}`, { linkDrive });
     return response.data;
   }
 );
+export const fetchGradesForQuestion = createAsyncThunk(
+  "question/fetchGradesForQuestion",
+  async (questionId) => {
+    const response = await http.get(`/slots`);
+    const slots = response.data;
+    const relevantSlot = slots.find((slot) =>
+      slot.questions.some((question) => question.id === questionId)
+    );
+    const grades = relevantSlot
+      ? relevantSlot.grades.filter((grade) => grade.questionId === questionId)
+      : [];
+    console.log("Fetched grades:", grades);
+    return grades;
+  }
+);
+
 const questionSlice = createSlice({
   name: "question",
   initialState: {
@@ -260,6 +265,9 @@ const questionSlice = createSlice({
         if (index !== -1) {
           state.slots[index] = updatedSlot;
         }
+      })
+      .addCase(fetchGradesForQuestion.fulfilled, (state, action) => {
+        state.currentGrades = action.payload;
       });
   },
 });

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "./Sidebar";
+import http from "../utils/http";
 
 const SlotDetails = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -18,7 +18,7 @@ const SlotDetails = () => {
   } = useQuery({
     queryKey: ["slot", id],
     queryFn: async () => {
-      const response = await axios.get(`http://localhost:3001/slots/${id}`);
+      const response = await http.get(`/slots/${id}`);
       return response.data;
     },
   });
