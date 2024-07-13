@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCourses } from "../slices/userSlice";
-import Sidebar from "./Sidebar";
 import http from "../utils/http";
 
 function Dashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   const [semester, setSemester] = useState("SUMMER2024");
   const user = useSelector((state) => state.user.currentUser);
   const courses = useSelector((state) => state.user.courses);
@@ -40,16 +37,11 @@ function Dashboard() {
 
     fetchCourses();
   }, [user, navigate, dispatch]);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
-        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 `}
       >
         {" "}
         <header className="bg-white shadow-md p-4 flex items-center">

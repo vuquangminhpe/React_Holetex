@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setAssignments } from "../slices/userSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import http from "../utils/http";
 
 const fetchAssignments = async (page) => {
@@ -11,7 +10,6 @@ const fetchAssignments = async (page) => {
 };
 
 const AssignmentList = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,17 +34,10 @@ const AssignmentList = () => {
     navigate(`/assignments?page=${newPage}`);
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
-        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}
       >
         <header className="bg-white shadow-md p-4 flex items-center">
           <h1 className="text-xl font-semibold">Assignments</h1>

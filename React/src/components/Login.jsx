@@ -31,7 +31,7 @@ function Login() {
           dispatch(setUser(user));
           navigate("/");
         } else {
-          setError("Từ K19 trở đi hãy đang nhập bằng mã ");
+          setError("Từ K19 trở đi hãy đăng nhập bằng mã ");
         }
       } else {
         setError("Hãy đăng nhập bằng Email fpt.edu.vn !!!");

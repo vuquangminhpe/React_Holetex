@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import http from "../utils/http";
 
 function UpcomingSlots() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [slots, setSlots] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [slotsPerPage] = useState(4);
@@ -19,9 +17,7 @@ function UpcomingSlots() {
     };
     fetchSlots();
   }, []);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+
   const indexOfLastSlot = currentPage * slotsPerPage;
   const indexOfFirstSlot = indexOfLastSlot - slotsPerPage;
   const currentSlots = slots.slice(indexOfFirstSlot, indexOfLastSlot);
@@ -30,11 +26,8 @@ function UpcomingSlots() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
-        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}
       >
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
           <header className="bg-white shadow-md p-4 flex items-center">

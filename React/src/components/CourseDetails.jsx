@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourse, fetchSlots } from "../store/courseSlice";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import Sidebar from "./Sidebar";
 
 const fetchPaginatedSlots = (
   slots,
@@ -48,8 +47,6 @@ const fetchPaginatedSlots = (
 };
 
 function CourseDetails() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { course, slots, status, error } = useSelector((state) => state.course);
@@ -106,18 +103,11 @@ function CourseDetails() {
 
   if (status === "loading" || isLoading) return <div>Loading...</div>;
   if (status === "failed" || isError) return <div>Error: {error}</div>;
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
       <div
-        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? "" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}
       >
         {" "}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">

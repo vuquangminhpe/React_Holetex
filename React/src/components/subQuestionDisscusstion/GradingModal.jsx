@@ -7,7 +7,7 @@ const StarRating = ({ rating, onRatingChange, disabled }) => {
     <div>
       {[1, 2, 3, 4, 5].map((star) => (
         <span
-          className="font-semibold p-1 "
+          className="font-semibold p-1"
           key={star}
           onClick={() => !disabled && onRatingChange(star)}
           style={{
@@ -22,7 +22,7 @@ const StarRating = ({ rating, onRatingChange, disabled }) => {
   );
 };
 
-const GradingModal = ({ onClose, questionId, currentUserId }) => {
+const GradingModal = ({ onClose, questionId, currentUserId, socket }) => {
   const dispatch = useDispatch();
   const { currentGroup, currentSlot } = useSelector((state) => state.question);
   const [grades, setGrades] = useState({});
@@ -69,8 +69,17 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
         questionId,
         grades: updatedGrades,
       })
-    );
-    onClose();
+    ).then(() => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(
+          JSON.stringify({
+            type: "UPDATE_GRADES",
+            grades: updatedGrades,
+          })
+        );
+      }
+      onClose();
+    });
   };
 
   return (
@@ -89,7 +98,7 @@ const GradingModal = ({ onClose, questionId, currentUserId }) => {
         </p>
         <table className="w-full">
           <thead className="p-4">
-            <tr className="text-left  border-b-2 bg-gray-100">
+            <tr className="text-left border-b-2 bg-gray-100">
               <th className="">Name</th>
               <th className="">Roll Number</th>
               <th className="">Hard-working</th>

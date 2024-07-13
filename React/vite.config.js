@@ -10,4 +10,12 @@ export default defineConfig({
       plugins: [tailwindcss(), autoprefixer()],
     },
   },
+  server: {
+    proxy: {
+      "/ws": {
+        target: "ws://localhost:8080",
+        ws: true,
+      },
+    },
+  },
 });

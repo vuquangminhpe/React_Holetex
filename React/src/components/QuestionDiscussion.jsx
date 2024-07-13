@@ -12,8 +12,11 @@ import {
   deleteComment,
   editComment,
   fetchGradesForQuestion,
+  addRealTimeComment,
+  deleteRealTimeComment,
+  editRealTimeComment,
+  voteRealTimeComment,
 } from "../store/questionSlice";
-import Sidebar from "./Sidebar";
 import UpdateLinkModal from "./subQuestionDisscusstion/UpdateLinkModal";
 import GradingModal from "./subQuestionDisscusstion/GradingModal";
 import StudentActivityChart from "./subQuestionDisscusstion/StudentActivityChart";
@@ -22,9 +25,9 @@ import StudentsWithoutComments from "./subQuestionDisscusstion/StudentsWithoutCo
 import GradeDisplay from "./subQuestionDisscusstion/GradeDisplay";
 
 function QuestionDiscussion() {
+  const [socket, setSocket] = useState(null);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showGradingModal, setShowGradingModal] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const dispatch = useDispatch();
   const {
@@ -52,6 +55,75 @@ function QuestionDiscussion() {
   const { questionId } = useParams();
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
+  const connectWebSocket = () => {
+    const newSocket = new WebSocket(`ws://localhost:9072/`);
+
+    newSocket.onopen = () => {
+      console.log("WebSocket connected");
+      setSocket(newSocket);
+    };
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("data socket: ", data.type);
+      switch (data.type) {
+        case "NEW_COMMENT":
+          dispatch(addRealTimeComment(data.comment));
+          break;
+        case "DELETE_COMMENT":
+          dispatch(deleteRealTimeComment(data.commentId));
+          break;
+        case "EDIT_COMMENT":
+          dispatch(editRealTimeComment(data.comment));
+          break;
+        case "VOTE_COMMENT":
+          dispatch(voteRealTimeComment(data.comment));
+          break;
+        default:
+          break;
+      }
+    };
+
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    newSocket.onclose = (event) => {
+      if (!event.wasClean) {
+        console.error(
+          `WebSocket closed unexpectedly: ${event.code} ${event.reason}`
+        );
+        setTimeout(connectWebSocket, 5000);
+      } else {
+        console.log("WebSocket closed cleanly");
+      }
+    };
+  };
+
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        switch (data.type) {
+          case "NEW_COMMENT":
+            dispatch(addRealTimeComment(data.comment));
+            break;
+          case "DELETE_COMMENT":
+            dispatch(deleteRealTimeComment(data.commentId));
+            break;
+          case "EDIT_COMMENT":
+            dispatch(editRealTimeComment(data.comment));
+            break;
+          case "VOTE_COMMENT":
+            dispatch(voteRealTimeComment(data.comment));
+            break;
+          default:
+            break;
+        }
+      };
+    }
+  }, [socket]);
+
   useEffect(() => {
     if (questionId) {
       dispatch(fetchUsers()).then(() => {
@@ -65,15 +137,32 @@ function QuestionDiscussion() {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim() || !currentUser) return;
-    await dispatch(
-      addComment({
-        questionId,
-        content: newComment,
-        userId: currentUser.id,
-      })
-    );
-    setNewComment("");
-    dispatch(fetchComments(questionId));
+
+    const commentData = {
+      questionId,
+      content: newComment,
+      userId: currentUser.id,
+    };
+
+    try {
+      await dispatch(addComment(commentData)).unwrap();
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(
+          JSON.stringify({
+            type: "NEW_COMMENT",
+            comment: commentData,
+          })
+        );
+      } else {
+        console.error("WebSocket is not open");
+        connectWebSocket(); // Attempt to reconnect
+      }
+
+      setNewComment("");
+    } catch (error) {
+      console.error("Failed to add comment:", error);
+    }
   };
   const handleVote = async (commentId, value) => {
     if (!currentUser) return;
@@ -81,6 +170,17 @@ function QuestionDiscussion() {
       await dispatch(
         voteComment({ commentId, value, userId: currentUser.id })
       ).unwrap();
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(
+          JSON.stringify({
+            type: "VOTE_COMMENT",
+            commentId,
+            value,
+            userId: currentUser.id,
+          })
+        );
+      }
     } catch (error) {
       console.error("Failed to vote:", error);
     }
@@ -95,30 +195,55 @@ function QuestionDiscussion() {
     e.preventDefault();
     if (!replyContent.trim() || !currentUser) return;
 
+    const replyData = {
+      questionId,
+      content: replyContent,
+      userId: currentUser.id,
+      parentId: replyingTo,
+    };
+
     try {
-      await dispatch(
-        addComment({
-          questionId,
-          content: replyContent,
-          userId: currentUser.id,
-          parentId: replyingTo,
-        })
-      ).unwrap();
+      await dispatch(addComment(replyData)).unwrap();
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(
+          JSON.stringify({
+            type: "NEW_REPLY",
+            comment: replyData,
+          })
+        );
+      }
+
       setReplyingTo(null);
       setReplyContent("");
     } catch (error) {
       console.error("Failed to submit reply:", error);
     }
   };
+
   const handleEditComment = (commentId, newContent) => {
     dispatch(editComment({ commentId, content: newContent }));
   };
 
-  const handleDeleteComment = (commentId) => {
+  const handleDeleteComment = async (commentId) => {
     if (window.confirm("Bạn có chắc muốn xóa bình luận này?")) {
-      dispatch(deleteComment(commentId));
+      try {
+        await dispatch(deleteComment(commentId)).unwrap();
+
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(
+            JSON.stringify({
+              type: "DELETE_COMMENT",
+              commentId,
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Failed to delete comment:", error);
+      }
     }
   };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "GROUP") {
@@ -140,18 +265,11 @@ function QuestionDiscussion() {
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Error: {error}</div>;
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   return (
     <div className="flex h-full bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
       <div
-        className={`flex-1 h-full flex flex-col  transition-all duration-300 ${
-          isSidebarOpen ? "" : "ml-4"
-        }`}
+        className={`flex-1 h-full flex flex-col  transition-all duration-300 `}
       >
         {" "}
         <header className="bg-white shadow-md p-4 flex items-center">

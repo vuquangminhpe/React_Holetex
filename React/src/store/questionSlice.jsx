@@ -43,15 +43,19 @@ export const fetchComments = createAsyncThunk(
 export const addComment = createAsyncThunk(
   "question/addComment",
   async ({ questionId, content, userId, parentId = null }) => {
-    const response = await http.post("/comments", {
-      questionId,
-      content,
-      userId,
-      parentId,
-      createdAt: new Date().toISOString(),
-      votes: 0,
-    });
-    return response.data;
+    try {
+      const response = await http.post("/comments", {
+        questionId,
+        content,
+        userId,
+        parentId,
+        createdAt: new Date().toISOString(),
+        votes: 0,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to add comment");
+    }
   }
 );
 
@@ -185,7 +189,58 @@ const questionSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    addRealTimeComment: (state, action) => {
+      const newComment = action.payload;
+      if (newComment.parentId) {
+        state.comments = state.comments.map((comment) => {
+          if (comment.id === newComment.parentId) {
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), newComment],
+            };
+          }
+          return comment;
+        });
+      } else {
+        state.comments = [newComment, ...state.comments];
+      }
+    },
+    deleteRealTimeComment: (state, action) => {
+      const commentId = action.payload;
+      state.comments = state.comments.filter((c) => c.id !== commentId);
+      state.comments = state.comments.map((comment) => {
+        if (comment.replies) {
+          comment.replies = comment.replies.filter(
+            (reply) => reply.id !== commentId
+          );
+        }
+        return comment;
+      });
+    },
+    editRealTimeComment: (state, action) => {
+      const updatedComment = action.payload;
+      state.comments = state.comments.map((comment) =>
+        comment.id === updatedComment.id ? updatedComment : comment
+      );
+      state.comments = state.comments.map((comment) => {
+        if (comment.replies) {
+          comment.replies = comment.replies.map((reply) =>
+            reply.id === updatedComment.id ? updatedComment : reply
+          );
+        }
+        return comment;
+      });
+    },
+    voteRealTimeComment: (state, action) => {
+      const updatedComment = action.payload;
+      state.comments = state.comments.map((comment) =>
+        comment.id === updatedComment.id
+          ? { ...comment, votes: updatedComment.votes }
+          : comment
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -271,5 +326,11 @@ const questionSlice = createSlice({
       });
   },
 });
+export const {
+  addRealTimeComment,
+  deleteRealTimeComment,
+  editRealTimeComment,
+  voteRealTimeComment,
+} = questionSlice.actions;
 
 export default questionSlice.reducer;
