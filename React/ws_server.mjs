@@ -8,56 +8,99 @@ wss.on("connection", (ws) => {
     try {
       const parsedMessage = JSON.parse(message);
       console.log("Received:", parsedMessage);
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          switch (parsedMessage.type) {
-            case "NEW_COMMENT":
+
+      switch (parsedMessage.type) {
+        case "NEW_COMMENT":
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
                   type: "NEW_COMMENT",
                   comment: parsedMessage.comment,
                 })
               );
-              break;
-            case "DELETE_COMMENT":
+            }
+          });
+          break;
+
+        case "DELETE_COMMENT":
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
                   type: "DELETE_COMMENT",
                   commentId: parsedMessage.commentId,
                 })
               );
-              break;
-            case "NEW_REPLY":
+            }
+          });
+          break;
+
+        case "EDIT_COMMENT":
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
-                  type: "NEW_REPLY",
+                  type: "EDIT_COMMENT",
                   comment: parsedMessage.comment,
                 })
               );
-              break;
-            case "VOTE_COMMENT":
+            }
+          });
+          break;
+
+        case "NEW_REPLY":
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
-                  type: "VOTE_COMMENT",
-                  commentId: parsedMessage.commentId,
-                  value: parsedMessage.value,
-                  userId: parsedMessage.userId,
+                  type: "NEW_REPLY",
+                  reply: parsedMessage.reply,
                 })
               );
-              break;
-            case "UPDATE_GRADES":
+            }
+          });
+          break;
+
+        case "VOTE_COMMENT":
+          {
+            const { commentId, value, userId } = parsedMessage.vote || {};
+            if (commentId && value !== undefined && userId) {
+              wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                  client.send(
+                    JSON.stringify({
+                      type: "VOTE_COMMENT",
+                      vote: { commentId, value, userId },
+                    })
+                  );
+                }
+              });
+            } else {
+              console.error(
+                "VOTE_COMMENT message is missing data:",
+                parsedMessage.vote
+              );
+            }
+          }
+          break;
+
+        case "UPDATE_GRADES":
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
                   type: "UPDATE_GRADES",
                   grades: parsedMessage.grades,
                 })
               );
-              break;
-            default:
-              console.error("Unknown message type:", parsedMessage.type);
-          }
-        }
-      });
+            }
+          });
+          break;
+
+        default:
+          console.error("Unknown message type:", parsedMessage.type);
+      }
     } catch (error) {
       console.error("Error processing message:", error);
     }

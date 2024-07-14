@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 import {
   fetchQuestion,
   fetchComments,
-  addComment,
-  voteComment,
   fetchUsers,
   fetchSlot,
   fetchGroupMembers,
-  deleteComment,
-  editComment,
   fetchGradesForQuestion,
   addRealTimeComment,
   deleteRealTimeComment,
   editRealTimeComment,
   voteRealTimeComment,
+  addRealTimeReply,
+  updateRealTimeRating,
 } from "../store/questionSlice";
 import UpdateLinkModal from "./subQuestionDisscusstion/UpdateLinkModal";
 import GradingModal from "./subQuestionDisscusstion/GradingModal";
@@ -40,7 +39,6 @@ function QuestionDiscussion() {
     currentGrades,
     currentGroup,
   } = useSelector((state) => state.question);
-  console.log("currentGrades:", currentGrades);
 
   const [showGroupActivity, setShowGroupActivity] = useState(false);
   const [showStudentActivity, setShowStudentActivity] = useState(false);
@@ -65,7 +63,8 @@ function QuestionDiscussion() {
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("data socket: ", data.type);
+      console.log("data socket:", data);
+
       switch (data.type) {
         case "NEW_COMMENT":
           dispatch(addRealTimeComment(data.comment));
@@ -77,7 +76,18 @@ function QuestionDiscussion() {
           dispatch(editRealTimeComment(data.comment));
           break;
         case "VOTE_COMMENT":
-          dispatch(voteRealTimeComment(data.comment));
+          if (data.vote) {
+            console.log("Received VOTE_COMMENT:", data.vote);
+            dispatch(voteRealTimeComment(data.vote));
+          } else {
+            console.error("VOTE_COMMENT received but no vote data.");
+          }
+          break;
+        case "NEW_REPLY":
+          dispatch(addRealTimeReply(data.reply));
+          break;
+        case "UPDATE_RATING":
+          dispatch(updateRealTimeRating(data.rating));
           break;
         default:
           break;
@@ -93,7 +103,6 @@ function QuestionDiscussion() {
         console.error(
           `WebSocket closed unexpectedly: ${event.code} ${event.reason}`
         );
-        setTimeout(connectWebSocket, 5000);
       } else {
         console.log("WebSocket closed cleanly");
       }
@@ -101,27 +110,14 @@ function QuestionDiscussion() {
   };
 
   useEffect(() => {
-    if (socket) {
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        switch (data.type) {
-          case "NEW_COMMENT":
-            dispatch(addRealTimeComment(data.comment));
-            break;
-          case "DELETE_COMMENT":
-            dispatch(deleteRealTimeComment(data.commentId));
-            break;
-          case "EDIT_COMMENT":
-            dispatch(editRealTimeComment(data.comment));
-            break;
-          case "VOTE_COMMENT":
-            dispatch(voteRealTimeComment(data.comment));
-            break;
-          default:
-            break;
-        }
-      };
+    if (!socket) {
+      connectWebSocket();
     }
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
   }, [socket]);
 
   useEffect(() => {
@@ -139,14 +135,14 @@ function QuestionDiscussion() {
     if (!newComment.trim() || !currentUser) return;
 
     const commentData = {
+      id: uuidv4(),
       questionId,
       content: newComment,
       userId: currentUser.id,
+      createdAt: new Date().toISOString(),
     };
 
     try {
-      await dispatch(addComment(commentData)).unwrap();
-
       if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(
           JSON.stringify({
@@ -156,7 +152,7 @@ function QuestionDiscussion() {
         );
       } else {
         console.error("WebSocket is not open");
-        connectWebSocket(); // Attempt to reconnect
+        connectWebSocket();
       }
 
       setNewComment("");
@@ -165,21 +161,23 @@ function QuestionDiscussion() {
     }
   };
   const handleVote = async (commentId, value) => {
-    if (!currentUser) return;
+    if (!currentUser || !commentId) return;
     try {
-      await dispatch(
-        voteComment({ commentId, value, userId: currentUser.id })
-      ).unwrap();
+      const voteData = {
+        commentId,
+        value,
+        userId: currentUser.id,
+      };
 
       if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(
           JSON.stringify({
             type: "VOTE_COMMENT",
-            commentId,
-            value,
-            userId: currentUser.id,
+            vote: voteData,
           })
         );
+      } else {
+        console.error("WebSocket is not open");
       }
     } catch (error) {
       console.error("Failed to vote:", error);
@@ -193,7 +191,7 @@ function QuestionDiscussion() {
 
   const handleSubmitReply = async (e) => {
     e.preventDefault();
-    if (!replyContent.trim() || !currentUser) return;
+    if (!replyContent.trim() || !currentUser || !replyingTo) return;
 
     const replyData = {
       questionId,
@@ -203,13 +201,11 @@ function QuestionDiscussion() {
     };
 
     try {
-      await dispatch(addComment(replyData)).unwrap();
-
       if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(
           JSON.stringify({
             type: "NEW_REPLY",
-            comment: replyData,
+            reply: replyData,
           })
         );
       }
@@ -221,15 +217,30 @@ function QuestionDiscussion() {
     }
   };
 
-  const handleEditComment = (commentId, newContent) => {
-    dispatch(editComment({ commentId, content: newContent }));
+  const handleEditComment = async (commentId, newContent) => {
+    try {
+      const updatedComment = {
+        id: commentId,
+        content: newContent,
+        userId: currentUser.id,
+      };
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(
+          JSON.stringify({
+            type: "EDIT_COMMENT",
+            comment: updatedComment,
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Failed to edit comment:", error);
+    }
   };
 
   const handleDeleteComment = async (commentId) => {
     if (window.confirm("Bạn có chắc muốn xóa bình luận này?")) {
       try {
-        await dispatch(deleteComment(commentId)).unwrap();
-
         if (socket && socket.readyState === WebSocket.OPEN) {
           socket.send(
             JSON.stringify({
@@ -243,7 +254,6 @@ function QuestionDiscussion() {
       }
     }
   };
-
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "GROUP") {

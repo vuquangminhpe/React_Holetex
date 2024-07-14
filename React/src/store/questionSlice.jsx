@@ -61,28 +61,33 @@ export const addComment = createAsyncThunk(
 
 export const voteComment = createAsyncThunk(
   "question/voteComment",
-  async ({ commentId, value, userId }) => {
-    const response = await http.get(`/comments/${commentId}`);
-    const comment = response.data;
+  async ({ commentId, value, userId }, { rejectWithValue }) => {
+    try {
+      const response = await http.get(`/comments/${commentId}`);
+      if (!response.data) {
+        throw new Error("Comment not found");
+      }
 
-    let newVotes = comment.votes;
-    if (!comment.voters || !comment.voters[userId]) {
-      newVotes += value;
-    } else {
-      newVotes = newVotes - comment.voters[userId] + value;
+      const comment = response.data;
+      const newVotes = (comment.votes || 0) + value;
+
+      const updatedComment = {
+        ...comment,
+        votes: newVotes,
+        voters: { ...(comment.voters || {}), [userId]: value },
+      };
+
+      const updateResponse = await http.put(
+        `/comments/${commentId}`,
+        updatedComment
+      );
+      return updateResponse.data;
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return rejectWithValue("Comment not found");
+      }
+      return rejectWithValue(error.message || "Failed to vote");
     }
-
-    const updatedComment = {
-      ...comment,
-      votes: newVotes,
-      voters: { ...comment.voters, [userId]: value },
-    };
-
-    const updateResponse = await http.put(
-      `/comments/${commentId}`,
-      updatedComment
-    );
-    return updateResponse.data;
   }
 );
 export const fetchUsers = createAsyncThunk("question/fetchUsers", async () => {
@@ -220,25 +225,88 @@ const questionSlice = createSlice({
     },
     editRealTimeComment: (state, action) => {
       const updatedComment = action.payload;
-      state.comments = state.comments.map((comment) =>
-        comment.id === updatedComment.id ? updatedComment : comment
-      );
       state.comments = state.comments.map((comment) => {
+        if (comment.id === updatedComment.id) {
+          return { ...comment, ...updatedComment };
+        }
         if (comment.replies) {
-          comment.replies = comment.replies.map((reply) =>
-            reply.id === updatedComment.id ? updatedComment : reply
+          const updatedReplies = comment.replies.map((reply) =>
+            reply.id === updatedComment.id
+              ? { ...reply, ...updatedComment }
+              : reply
           );
+          return { ...comment, replies: updatedReplies };
+        }
+        return comment;
+      });
+    },
+    addRealTimeReply: (state, action) => {
+      const newReply = action.payload;
+      state.comments = state.comments.map((comment) => {
+        if (comment && comment.id === newReply?.parentId) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), newReply],
+          };
         }
         return comment;
       });
     },
     voteRealTimeComment: (state, action) => {
-      const updatedComment = action.payload;
-      state.comments = state.comments.map((comment) =>
-        comment.id === updatedComment.id
-          ? { ...comment, votes: updatedComment.votes }
-          : comment
-      );
+      const { commentId, value, userId } = action.payload || {};
+      if (!commentId || !userId || value === undefined) {
+        console.error("Invalid vote data:", action.payload);
+        return;
+      }
+
+      state.comments = state.comments.map((comment) => {
+        if (comment.id === commentId) {
+          const existingVoteIndex = comment.votes
+            ? comment.votes.findIndex((v) => v.userId === userId)
+            : -1;
+          let updatedVotes;
+          if (existingVoteIndex !== -1) {
+            updatedVotes = [...comment.votes];
+            updatedVotes[existingVoteIndex] = { userId, value };
+          } else {
+            updatedVotes = [...(comment.votes || []), { userId, value }];
+          }
+          return { ...comment, votes: updatedVotes };
+        }
+
+        if (comment.replies) {
+          const updatedReplies = comment.replies.map((reply) => {
+            if (reply.id === commentId) {
+              const existingVoteIndex = reply.votes
+                ? reply.votes.findIndex((v) => v.userId === userId)
+                : -1;
+              let updatedVotes;
+              if (existingVoteIndex !== -1) {
+                updatedVotes = [...reply.votes];
+                updatedVotes[existingVoteIndex] = { userId, value };
+              } else {
+                updatedVotes = [...(reply.votes || []), { userId, value }];
+              }
+              return { ...reply, votes: updatedVotes };
+            }
+            return reply;
+          });
+          return { ...comment, replies: updatedReplies };
+        }
+
+        return comment;
+      });
+    },
+
+    updateRealTimeRating: (state, action) => {
+      const { commentId, rating } = action.payload;
+      state.comments = updateCommentOrReply(state.comments, {
+        id: commentId,
+        rating,
+      });
+    },
+    updateRealTimeGrades: (state, action) => {
+      state.currentGrades = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -331,6 +399,9 @@ export const {
   deleteRealTimeComment,
   editRealTimeComment,
   voteRealTimeComment,
+  addRealTimeReply,
+  updateRealTimeRating,
+  updateRealTimeGrades,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
