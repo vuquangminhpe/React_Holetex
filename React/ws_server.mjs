@@ -63,26 +63,16 @@ wss.on("connection", (ws) => {
           break;
 
         case "VOTE_COMMENT":
-          {
-            const { commentId, value, userId } = parsedMessage.vote || {};
-            if (commentId && value !== undefined && userId) {
-              wss.clients.forEach((client) => {
-                if (client.readyState === WebSocket.OPEN) {
-                  client.send(
-                    JSON.stringify({
-                      type: "VOTE_COMMENT",
-                      vote: { commentId, value, userId },
-                    })
-                  );
-                }
-              });
-            } else {
-              console.error(
-                "VOTE_COMMENT message is missing data:",
-                parsedMessage.vote
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "NEW_REPLY",
+                  vote: parsedMessage.vote,
+                })
               );
             }
-          }
+          });
           break;
 
         case "UPDATE_GRADES":

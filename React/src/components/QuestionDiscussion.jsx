@@ -355,7 +355,7 @@ function QuestionDiscussion() {
                 <div className="space-y-4">
                   {comments.map((comment) => (
                     <div
-                      key={comment.id}
+                      key={`${comment.id}-comment-${comment.currentUserId}`}
                       className="bg-gray-50 p-4 rounded mb-4"
                       onMouseEnter={() => setHoveredCommentId(comment.id)}
                       onMouseLeave={() => setHoveredCommentId(null)}
@@ -452,8 +452,19 @@ function QuestionDiscussion() {
                                   ))}
                                 </>
                               )}
+                            {comment && comment.votes && (
+                              <div>
+                                {Array.isArray(comment.votes) &&
+                                  comment.votes.map((vote, index) => (
+                                    <span
+                                      key={`${comment.id}-vote-${vote.userId}-${index}`}
+                                    ></span>
+                                  ))}
+                              </div>
+                            )}
                           </div>
                         )}
+
                         {currentUser && (
                           <button
                             onClick={() => handleReply(comment.id)}
@@ -464,7 +475,19 @@ function QuestionDiscussion() {
                         )}
                       </div>
                       <div className="rounded-md bg-white w-16 -translate-y-8 h-10 leading-10 justify-center float-right flex">
-                        <div className="text-orange-400">★</div> {comment.votes}{" "}
+                        <div className="text-orange-400">★</div>
+                        {comment && comment.votes && (
+                          <div>
+                            {Array.isArray(comment.votes) &&
+                              comment.votes.map((vote, index) => (
+                                <span
+                                  key={`${comment.id}-vote-${vote.userId}-${index}`}
+                                >
+                                  {String(vote.value)}
+                                </span>
+                              ))}
+                          </div>
+                        )}
                       </div>
                       {replyingTo === comment.id && currentUser && (
                         <form onSubmit={handleSubmitReply} className="mt-4">
@@ -495,7 +518,7 @@ function QuestionDiscussion() {
                       {comment.replies &&
                         comment.replies.map((reply) => (
                           <div
-                            key={reply.id}
+                            key={`${reply.content}-reply-${uuidv4()}`}
                             className="ml-8 mt-2 p-2 bg-gray-100 rounded"
                           >
                             <span className="mr-4">

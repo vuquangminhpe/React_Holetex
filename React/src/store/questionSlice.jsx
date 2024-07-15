@@ -20,7 +20,6 @@ export const fetchSlot = createAsyncThunk(
     return slot;
   }
 );
-
 export const fetchComments = createAsyncThunk(
   "question/fetchComments",
   async (questionId) => {
@@ -39,7 +38,6 @@ export const fetchComments = createAsyncThunk(
     return mainComments;
   }
 );
-
 export const addComment = createAsyncThunk(
   "question/addComment",
   async ({ questionId, content, userId, parentId = null }) => {
@@ -253,49 +251,20 @@ const questionSlice = createSlice({
       });
     },
     voteRealTimeComment: (state, action) => {
-      const { commentId, value, userId } = action.payload || {};
-      if (!commentId || !userId || value === undefined) {
-        console.error("Invalid vote data:", action.payload);
-        return;
+      const { commentId, userId, value } = action.payload;
+      const commentToUpdate = state.comments.find((c) => c.id === commentId);
+      if (commentToUpdate) {
+        const votes = Array.isArray(commentToUpdate.votes)
+          ? commentToUpdate.votes
+          : [];
+        const existingVoteIndex = votes.findIndex((v) => v.userId === userId);
+        if (existingVoteIndex !== -1) {
+          votes[existingVoteIndex] = { userId, value };
+        } else {
+          votes.push({ userId, value });
+        }
+        commentToUpdate.votes = votes;
       }
-
-      state.comments = state.comments.map((comment) => {
-        if (comment.id === commentId) {
-          const existingVoteIndex = comment.votes
-            ? comment.votes.findIndex((v) => v.userId === userId)
-            : -1;
-          let updatedVotes;
-          if (existingVoteIndex !== -1) {
-            updatedVotes = [...comment.votes];
-            updatedVotes[existingVoteIndex] = { userId, value };
-          } else {
-            updatedVotes = [...(comment.votes || []), { userId, value }];
-          }
-          return { ...comment, votes: updatedVotes };
-        }
-
-        if (comment.replies) {
-          const updatedReplies = comment.replies.map((reply) => {
-            if (reply.id === commentId) {
-              const existingVoteIndex = reply.votes
-                ? reply.votes.findIndex((v) => v.userId === userId)
-                : -1;
-              let updatedVotes;
-              if (existingVoteIndex !== -1) {
-                updatedVotes = [...reply.votes];
-                updatedVotes[existingVoteIndex] = { userId, value };
-              } else {
-                updatedVotes = [...(reply.votes || []), { userId, value }];
-              }
-              return { ...reply, votes: updatedVotes };
-            }
-            return reply;
-          });
-          return { ...comment, replies: updatedReplies };
-        }
-
-        return comment;
-      });
     },
 
     updateRealTimeRating: (state, action) => {
@@ -315,7 +284,6 @@ const questionSlice = createSlice({
       .addCase(fetchQuestion.fulfilled, (state, action) => {
         state.question = action.payload;
       })
-
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.comments = action.payload.map((comment) => ({
           ...comment,
